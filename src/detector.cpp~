@@ -1,0 +1,48 @@
+/**
+ * Constructor
+ \param Z0 is the atomic number of fragment
+ \param mass0 is mass of fragment in amu
+ \param filename specifies the name of the file with energy loss information
+ \param CsI_res0 fractional energy resolution of this fragment in CsI
+ \param thickness is target thickness in mg/cm2 
+*/
+
+detector::detector()
+{
+  loss = new CLoss(filename,mass);
+  CsI_res = CsI_res0;
+  //CsI_res = 0;
+  //be9 target  
+  float thick = thickness/1000./9.*6.02e23; // atoms/ cem2
+  multScat = new CMultScat((int)Z,4,thick);
+
+  float fromCenter = 37.2;//35.;
+  float radius = 63.; //50.;
+  Array = new CArray(radius,fromCenter,6.42,7.6);
+  shadowArray = new CArray(radius+2.,fromCenter,7.4,8.2);
+  real = new CFrame(mass);
+  recon = new CFrame(mass);
+
+  float dist = 405.;
+  //float dist = 370.;
+  Ring = new ring(dist,7.5,62.5,128,128,0); //S4
+  Inactive = new ring(dist,6.5,7.5,1,1,0);//S4 inactive area
+  // RingCsI = new ring(365.,7.5,62.5,128,128); //S4 back of CsI
+  RingCsI = new ring(dist + 39.,7.5,62.5,128,128,1); //p range;
+  //RingCsI1 = new ring(332.,7.5,62.5,128,128);
+  //RingCsI = new ring(315.,7.5,62.5,128,128); // 0 thickness
+
+  Plane = new plane_det(445.,20.,20.,0.95);
+
+
+}
+//*********************************************************
+/**
+*Destructor
+*/
+detector::~detector()
+{
+  delete Array;
+  delete real;
+  delete recon;
+}
