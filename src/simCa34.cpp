@@ -195,13 +195,15 @@ int main()
       int nhit = frag1.hit3(xTarget, yTarget, zBreakup, straggle) + frag2.hit3(xTarget, yTarget, zBreakup,straggle);
       nhit += frag3.hit4(xTarget, yTarget, zBreakup);
 
+      //if(nhit!=3) continue;
+      
       int nhit1 = S4.event(frag1.real->theta, frag1.real->phi,0);
       frag1.recon->theta = S4.thetaHit;
       frag1.recon->phi = S4.phiHit;
 
       
       int nhit2 = S4.event(frag2.real->theta, frag2.real->phi,0);
-      frag1.recon->theta = S4.thetaHit;
+      frag2.recon->theta = S4.thetaHit;
       frag2.recon->phi = S4.phiHit;
 
       if(nhit1)
