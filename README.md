@@ -5,7 +5,7 @@ This is my attempt(DH) at consolidating and improving
      the Nuclear Reaction Monte Carlo Simulations
      	 done at WUSTL
 	 
-	      created by,
+	      originally created by,
 	      	      Bob Charity (Much Love)
 
 ****************************************************/
