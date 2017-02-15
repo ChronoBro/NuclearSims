@@ -36,7 +36,7 @@ CFrag::CFrag(float Z0,float mass0, string filename, float CsI_res0,
   Ring = new ring(dist,7.5,62.5,128,128,0); //S4
   Inactive = new ring(dist,6.5,7.5,1,1,0);//S4 inactive area
   // RingCsI = new ring(365.,7.5,62.5,128,128); //S4 back of CsI
-  RingCsI = new ring(dist + 39.,7.5,62.5,128,128,1); //p range;
+  RingCsI = new ring(410 + 39.,7.5,62.5,128,128,1); //p range;
   //RingCsI1 = new ring(332.,7.5,62.5,128,128);
   //RingCsI = new ring(315.,7.5,62.5,128,128); // 0 thickness
 
@@ -110,7 +110,7 @@ int CFrag::hit3(float xtarget,float ytarget, float zbreakup, float straggle)
   theta_prime = atan2(sqrt(pow(x,2.) + pow(y,2.)),Ring->dist);
   phi_prime = atan2(y,x);// + acos(-1);
 
-  theta_prime_CsI = atan2(sqrt(pow(x_CsI,2.) + pow(y_CsI,2.)),RingCsI->dist);
+  theta_prime_CsI = atan2(sqrt(pow(x_CsI,2.) + pow(y_CsI,2.)),410+39*cos(real->theta));
   phi_prime_CsI = atan2(y_CsI,x_CsI);// + acos(-1);
  //  if (phi_prime < 0. || phi_prime > 2.*acos(-1))
 //     {

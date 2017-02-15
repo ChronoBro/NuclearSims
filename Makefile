@@ -9,10 +9,14 @@ OBJECTS := objs/detector.o objs/plf.o objs/frag.o objs/tele.o objs/array.o objs/
 
 ALLOBJECTS := $(patsubst $(SRCDIR)%.cpp,$(OBJDIR)%.o,$(wildcard $(SRCDIR)*.cpp))
 
-CFLAGS= -c -g -O2 -std=c++11 -I$(shell root-config --incdir) -I$(INCDIR)
+CFLAGS= -c -g -std=c++11 -I$(shell root-config --incdir) -I$(INCDIR)
 COMPILER= c++
 LINKOPTION = $(shell root-config --libs) 
 
+all: simCa34 simK33
+
+simK33: $(OBJDIR)simK33.o $(OBJECTS)
+	$(COMPILER) -o sims/simK33 $(OBJDIR)simK33.o $(OBJECTS) $(LINKOPTION)
 
 simCa34: $(OBJDIR)simCa34.o $(OBJECTS)
 	$(COMPILER) -o sims/simCa34 $(OBJDIR)simCa34.o $(OBJECTS) $(LINKOPTION)

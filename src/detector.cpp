@@ -201,7 +201,7 @@ int detector::event(float theta0, float phi0, int coordinate0) //assumes particl
 		    {
 		      if(phi0 > Location[ix][iy].fphiMin && phi0 < Location[ix][iy].fphiMax)
 			{
-			  if(phi0 > Location[ix][iy].fphiMin && phi0 < Location[ix][iy].bphiMax)
+			  if(phi0 > Location[ix][iy].bphiMin && phi0 < Location[ix][iy].bphiMax)
 			    {
 			      //cout << endl << "theta0 = " << theta0 << endl;
 			      thetaHit = Location[ix][iy].fthetaMin + xR*Location[ix][iy].fdtheta;

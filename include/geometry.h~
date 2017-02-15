@@ -1,0 +1,23 @@
+#ifndef _geometry
+#define _geometry
+
+#include "math.h"
+
+
+using namespace std;
+
+
+class geometry
+{
+
+
+
+
+
+
+
+
+
+
+
+}

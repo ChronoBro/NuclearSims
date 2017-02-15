@@ -16,6 +16,7 @@ CDecay::CDecay(CFrag * part10, CFrag *part20, CFrag* part30,
 	       bool einstein0)
 {
 
+  Nfrags = 3;
   frag6Be = new CFrame (6);
 
   einstein = einstein0;
@@ -52,6 +53,105 @@ CDecay::CDecay(CFrag * part10, CFrag *part20, CFrag* part30,
 
   string name("6be_p2_new.dat");
   Moscow = new moscow(name);
+}
+
+CDecay::CDecay(CFrag * part10, CFrag *part20,bool einstein0)
+{
+
+  Nfrags = 2;
+  //frag6Be = new CFrame (massFrame);
+
+  einstein = einstein0;
+  CFrame::einstein = einstein;
+
+  frag[0] = part10;
+  frag[1] = part20;
+
+
+  real[0] = part10->real;
+  real[1] = part20->real;
+
+
+  recon[0] = part10->recon;
+  recon[1] = part20->recon;
+
+  sumA = 0.;
+  for (int i=0;i<2;i++) sumA += real[i]->A;
+
+  plfRecon = new CFrame(sumA);
+
+
+  for (int i=0;i<2;i++) 
+    {
+     partCM[i] = new CFrame(real[i]->A);
+    }
+ 
+}
+
+
+CDecay::CDecay(CFrag * part10, CFrag *part20,bool einstein0, float vCM0)
+{
+
+  Nfrags = 2;
+  vCM = vCM0;
+  einstein = einstein0;
+  CFrame::einstein = einstein;
+
+  frag[0] = part10;
+  frag[1] = part20;
+
+
+  real[0] = part10->real;
+  real[1] = part20->real;
+
+
+  recon[0] = part10->recon;
+  recon[1] = part20->recon;
+
+  sumA = 0.;
+  for (int i=0;i<2;i++) sumA += real[i]->A;
+
+  plfRecon = new CFrame(sumA);
+
+
+  for (int i=0;i<2;i++) 
+    {
+     partCM[i] = new CFrame(real[i]->A);
+    }
+ 
+  for (int i=0;i<180;i++)
+    {
+      float theta = ((float)i+.5)*3.14159/180.;
+      //float dsigma = pow(sin(theta),5);  // m= 2
+      //float dsigma =sin(theta)*pow((3.*pow(cos(theta),2)-1.),2); // m = 0
+      float dsigma = (1.-.92*pow(cos(theta),2))*sin(theta);
+      angle[i] = dsigma;
+      if (i > 0) angle[i] += angle[i-1];
+    }
+
+  for (int i=0;i<180;i++) 
+    {
+     angle[i] /= angle[179];
+     //cout << angle[i] << endl;
+    }
+
+
+  for (int i=0;i<360;i++)
+    {
+      float phi = ((float)i+.5)*3.14159/180.;
+      float dsigma = 3052.06;
+      dsigma -= 1.11417e5*(exp(-pow((phi - pi/2.)/(23.5031*pi/180.),2)/2.)+exp(-pow((phi - 3.*pi/2.)/(23.5031*pi/180.),2)/2.));
+      dsigma += 1.11464e5*(exp(-pow((phi - pi/2.)/(23.2806*pi/180.),2)/2.)+exp(-pow((phi - 3.*pi/2.)/(23.2806*pi/180.),2)/2.));
+      phiAngle[i] = dsigma;
+      if (i > 0) phiAngle[i] += phiAngle[i-1];
+    }
+
+  for (int i=0;i<360;i++) 
+    {
+     phiAngle[i] /= phiAngle[359];
+
+    }
+
 }
 
 
@@ -115,7 +215,7 @@ float CDecay::getErelNewton(CFrame** part)
 
   ErelRecon = 0.;
 
-   for (int j=0;j<3;j++)
+   for (int j=0;j<Nfrags;j++)
      {
        partCM[j]->velocity = 0.;
        for (int i=0;i<3;i++)
@@ -145,10 +245,10 @@ float CDecay::getErelRel(CFrame **part)
   for (int i=0;i<3;i++) 
    {
      plfRecon->pc[i] = 0.;
-     for (int j=0;j<3;j++)plfRecon->pc[i] += part[j]->pc[i];
+     for (int j=0;j<Nfrags;j++)plfRecon->pc[i] += part[j]->pc[i];
    }
   plfRecon->totEnergy = 0;
-  for (int j=0;j<3;j++) plfRecon->totEnergy += part[j]->totEnergy;
+  for (int j=0;j<Nfrags;j++) plfRecon->totEnergy += part[j]->totEnergy;
   plfRecon->getVelocityFromMom();
 
 
@@ -158,11 +258,11 @@ float CDecay::getErelRel(CFrame **part)
 
 
 
-  for (int j=0;j<3;j++)
+  for (int j=0;j<Nfrags;j++)
     for (int i=0;i<3;i++) partCM[j]->v[i] = part[j]->v[i];
 
   ErelRecon = 0.;
-   for (int j=0;j<3;j++)
+   for (int j=0;j<Nfrags;j++)
      {
        partCM[j]->transformVelocity(plfRecon->v);
        ErelRecon += partCM[j]->getEnergy();
@@ -240,10 +340,11 @@ void CDecay::ModeMicroCanonical()
 //       EkTot = ran.BreitWigner(EkTot8B,gamma8B);
 //          if( fabs(EkTot- EkTot8B) <  2.*gamma8B && EkTot > 0.) break;
 //     }
-  EkTot = 2.2; // ground state
+  //EkTot = 2.2; // ground state
   //EkTot = 1.476;
-
-  micro(3,real,EkTot,sumA);
+  EkTot = 1.96; 
+  
+  micro(Nfrags,real,EkTot,sumA);
 }
 
 //************************************************************
@@ -257,7 +358,7 @@ bool CDecay::OnTopOf()
 
   
   //for inner two detectors consider 3x3 array of CsI
-  for (int i=0;i<3;i++)
+  for (int i=0;i<Nfrags;i++)
     {
       if (frag[i]->Array->hitTower != 2) continue;
       if (frag[i]->Array->Tower[2]->hitTele == 1)
@@ -278,7 +379,7 @@ bool CDecay::OnTopOf()
   
 
   for (int i=0;i<2;i++)
-    for (int j=i+1;j<3;j++)
+    for (int j=i+1;j<Nfrags;j++)
       {
 	if (frag[i]->Array->hitTower == frag[j]->Array->hitTower)
 	  {
@@ -362,20 +463,20 @@ bool CDecay::leaveCsI()
     void CDecay::micro(int N,CFrame **Frag,float Ektot,float massTot)
 {
   valarray <float> vcm(3);
-  for (int i=0;i<N;i++)
+  for (int i=0;i<Nfrags;i++)
     {
 
       Frag[i]->v[0] = ran.Gaus(0.,1.)/Frag[i]->A;
       Frag[i]->v[1] = ran.Gaus(0.,1.)/Frag[i]->A;
       Frag[i]->v[2] = ran.Gaus(0.,1.)/Frag[i]->A;
       
-      for (int j=0;j<3;j++) vcm[j] += Frag[i]->v[j]*Frag[i]->A;
+      for (int j=0;j<Nfrags;j++) vcm[j] += Frag[i]->v[j]*Frag[i]->A;
     }
 
   vcm /= massTot;
 
   float testTotal= 0.;
-  for (int i=0;i<N;i++)
+  for (int i=0;i<Nfrags;i++)
     {
       Frag[i]->velocity = 0.;
       for (int j=0;j<3;j++)
@@ -388,13 +489,51 @@ bool CDecay::leaveCsI()
       testTotal += Frag[i]->energy;
     }
   float ratio = sqrt(Ektot/testTotal);
-  for (int i=0;i<N;i++)
+  for (int i=0;i<Nfrags;i++)
     {
       Frag[i]->velocity *= ratio;
-      for (int j=0;j<3;j++) Frag[i]->v[j] *= ratio;
+      for (int j=0;j<Nfrags;j++) Frag[i]->v[j] *= ratio;
     }
 
 }
+
+void CDecay::Mode(double ET, double Ex, double mass1, double mass2)
+{
+
+  //double ET_mean = 0.3111  ;//Q = -7.268
+  //double Excitation = .2439;
+  //double Excitation = 0.;
+  //double Et;
+  //for (;;)
+  //  {
+  //    Et = ran.BreitWigner(ET_mean,.1);
+  //    if (Et > .1  && Et < 10.) break;
+      
+  //  }
+
+  double Et = ET + Ex;
+
+  double mu = mass1*mass2/(mass1+mass2);
+  double vrel = sqrt(2.*Et/mu)*.9784;
+  double v1 = vrel*mass2/(mass1+mass2);
+  double v2 = vrel - v1;
+
+
+  double theta = acos(1.-2.*ran.Rndm());
+  double phi = 2.*acos(-1.)*ran.Rndm();
+  real[0]->v[0] = v1*sin(theta)*cos(phi);
+  real[0]->v[1] = v1*sin(theta)*sin(phi);
+  real[0]->v[2] = v1*cos(theta);
+
+
+  for (int i=0;i<3;i++) real[1]->v[i] = -v2/v1*real[0]->v[i];
+
+
+
+}
+
+
+
 
 //**********************************************************
   /**
@@ -552,13 +691,20 @@ float CDecay::getEk3()
 
 void CDecay::getJacobi(CFrame**part,bool com)
 {
-    float totMass = part[0]->A + part[1]->A + part[2]->A;
+  if(Nfrags!=2)
+    {
+      cout << "what are you doing trying to calculate a jacobi coordinate without 3-particle decay?" << endl;
+      return;
+    }
 
+  float totMass = part[0]->A + part[1]->A + part[2]->A;
+
+  
   CFrame p1(part[0]->A);
   CFrame p2(part[1]->A);
   CFrame p3(part[2]->A);
   float Etot;
-  for (int i=0;i<3;i++)
+  for (int i=0;i<Nfrags;i++)
     {
       p1.v[i] = part[0]->v[i];
       p2.v[i] = part[1]->v[i];
@@ -571,7 +717,7 @@ void CDecay::getJacobi(CFrame**part,bool com)
        CFrame frame(totMass);
 
 
-      for (int i=0;i<3;i++) 
+      for (int i=0;i<Nfrags;i++) 
        {
          frame.pc[i] = part[0]->pc[i] + part[1]->pc[i] + part[2]->pc[i];
        }

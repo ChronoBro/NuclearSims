@@ -92,6 +92,74 @@ void CPlf::GetPlf()
   frame->phi = phi;
 
 }
+
+void CPlf::GetPlf(float Pbeam0, int mass)
+{
+  // float vv;
+  // if (ran.Rndm()>0.2) vv = ran.Gaus(11.01,.2);
+  // else 
+  // {
+  //    float y1 = ran.Gaus(0.,1);
+  //    float y2 = ran.Gaus(0.,1);
+  //    float y = sqrt(pow(y1,2)+pow(y2,2));
+  //    vv = 10.9 - y/3.;
+  //  }
+
+  // float phi = 2.*pi*ran.Rndm();
+  // float theta;
+  // if(ran.Rndm()>0.1)theta = sqrt(temp1)*sqrt(-log(ran.Rndm()+1.e-32));
+  // else theta = sqrt(temp2)*sqrt(-log(ran.Rndm()+1.e-32));
+
+  
+
+  //  float v[3];
+  //  v[0] = vv*sin(theta)*cos(phi);
+  //  v[1] = vv*sin(theta)*sin(phi);
+  //  v[2] = vv*cos(theta);
+
+  //  for(int i=0;i<3;i++)frame->v[i] = v[i];
+  //  frame->velocity= vv;
+  //  frame->theta = theta;
+  //  frame->phi=phi;
+
+  //below is isotropic breakup
+  
+  float vv;
+  float ptr;
+  float pz;
+  float pbeam;
+  float pmag;
+
+  //CMomDist momDist;
+  
+  ptr = 0.; //momDist.getTransMom(); could make these gaussian or something
+  pz = 0.; //momDist.getLongMom();
+  pbeam = Pbeam0;
+  
+  float theta = 0.;
+  theta = atan2(ptr, pz + pbeam);
+
+  float phi = 0.;
+  phi = 2.*pi*ran.Rndm();
+
+  pmag = sqrt(pow(pz + pbeam,2.)+pow(ptr,2.));
+  vv = pmag/sqrt(pow(pmag,2.)+pow(931.494*(float)mass,2.));
+  vv = 30.*vv;
+  
+  float v[3];
+  v[0] = vv*sin(theta)*cos(phi);
+  v[1] = vv*sin(theta)*sin(phi);
+  v[2] = vv*cos(theta);
+  
+  for (int i=0;i<3;i++)frame->v[i] = v[i];
+  frame->velocity = vv;
+  frame->theta = theta;
+  frame->phi = phi;
+
+}
+
+
+
 //*************************************************
   /**
    * selects breakup angle of parent fragments (isotropic distribution)

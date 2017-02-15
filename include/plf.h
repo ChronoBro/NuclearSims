@@ -28,6 +28,7 @@ class CPlf
   CPlf(float);
   ~CPlf();
   void GetPlf();
+  void GetPlf(float,int);
   void isotropic();
   void inplane();
   float temp1,temp2;

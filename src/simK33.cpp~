@@ -26,6 +26,9 @@ int main()
   string Loss2("../loss/Hydrogen.loss");
   string Loss3("../loss/Argon.loss");
   
+
+  float plfMass = 33.;
+  float targetMass = 9.;
   
   int const Nevents = 50000;
   //int const Nevents =  1000;
@@ -39,6 +42,18 @@ int main()
   float straggle = 0.;
   //float CsiRes = .113;
 
+  float EPA0 = 70;  
+  //energy loss in 1/2 of target
+  float epa2_mean = Ploss.getEout(EPA0*plfMass,thickness/2.)/plfMass;
+  float Pbeam2_mean = sqrt(pow((epa2_mean+931.478)*plfMass,2)-pow(plfMass*931.478,2));
+
+
+  //reaction center of mass velocity
+  float Ecm = (epa2_mean+931.478)*plfMass + targetMass*931.478;
+  float pcm = Pbeam2_mean;
+  float vCM = pcm/Ecm*30.;
+
+  
 
 
   CPlf plf(thickness);
@@ -57,10 +72,11 @@ int main()
   CsI2.setGeometry(1,4,7.5,35,0,0,0);
   //CsI2.setGeometryBack(1,4,7.5,42);
   
-  CDecay decay(&frag1,&frag2,&frag3,einstein);
+  CDecay decay(&frag2,&frag3,einstein, vCM);
 
   float Qbreakup = decay.EkTot8B;
 
+  
   TH1I JacobiT_x_p("JacobiT_x_p","",10,0,1);
   TH1I JacobiY_x_p("JacobiY_x_p","",10,0,1);
   TH1I JacobiT_y_p("JacobiT_y_p","",10,-1,1);

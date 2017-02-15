@@ -43,7 +43,10 @@ class CDecay
   CFrag *frag[3];  //!< information about the decay fragments
   static float const pi; //!< 3.14159....
 
+  int Nfrags;
+  CDecay(CFrag*,CFrag*,bool einstein0);  
   CDecay(CFrag*,CFrag*,CFrag*,bool einstein0);
+  CDecay(CFrag*,CFrag*,bool einstein0, float vCM0);
   ~CDecay();
   float getErelReal();
   float getErelRecon();
@@ -51,6 +54,7 @@ class CDecay
   float getErelNewton(CFrame**);
   float getErelRel(CFrame**);
 
+  void Mode(double,double,double,double);
   void ModeMoscow();
   void ModeMicroCanonical();
   void ModeMicroCanonicalBe();
@@ -71,6 +75,11 @@ class CDecay
   float ErelRecon; //!<reconstructed relative kinetic energy
 
 
+  float vCM;
+  float angle[180];
+  float phiAngle[360];
+
+ 
   float aaRel;
   float ppRel[6];
   float aapRelMin;
