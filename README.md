@@ -30,3 +30,5 @@ Feel free to edit the /src files but try not to break anything that currently wo
 The idea being we keep a consistent set of objects so all we have to do is create new sim files.
 
 Please add as much as you want!
+
+**********Don't forget to make/make clean**********
