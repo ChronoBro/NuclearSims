@@ -12,6 +12,103 @@ using namespace std;
  */
 
 
+CArray::CArray(int Ndetectors0,char * nameMapFile)
+{
+  Ndetectors = Ndetectors0;
+  cout << endl << "Initializing detector array..." << endl;
+  mapFile.open(nameMapFile);
+  map = new int*[2*Ndetectors];
+  
+}
+
+int CArray::setMap()
+{
+  int imax=0;
+  int jmax=0;
+  for(int i; i < Ndetectors; i++)
+    {
+      int check = Detectors[i].didSetGeo;
+      if(check)
+	{
+	  imax = max(Detectors[i].Nx,imax);
+	  jmax = max(Detectors[i].Ny, jmax);
+	  continue;
+	}
+      else
+	{
+	  cout << endl << "Didn't set geometry for detector " << i << endl;
+	  return 0;
+	}
+    }
+
+  total = (imax+1)*(jmax+1);
+  
+  for(int i=0; i < 2*Ndetectors; i++)
+    {
+      map[i] = new int[total];
+    }
+  
+  if(mapFile.is_open())
+    {
+      for(int i; i < total; i++)
+	{
+	  for(int d; d< 2*Ndetectors; d++)
+	    {
+	      mapFile >> map[d][i]; //data stored as Nxisegment0, Nyisegment0, Nxisegment1, Nyisegment1 etc...
+	    }
+	}
+    }
+  else
+    {
+      cout << endl << "Couldn't open mapfile" << endl ;
+      cout << endl << "Need Map file if you want easy clean detection" << endl;
+      return 0;
+    }
+
+  
+  return 1;
+
+}
+
+
+int CArray::cleanDetection(int detector1,int segment1, int detector2, int segment2, int isysegment)
+{
+  if(isysegment)
+    {
+      for(int i=0;i<total;i++)
+	{
+	  if(segment1==map[2*detector1][i])
+	    {
+	      if(segment2==map[2*detector2][i])
+		{
+		  return 1;
+		}
+	      return 0;
+	      break;
+	    }
+	}
+    }
+  else
+    {
+      for(int i=0;i<total;i++)
+	{
+	  if(segment1==map[detector1][i])
+	    {
+	      if(segment2==map[detector2][i])
+		{
+		  return 1;
+		}
+	      return 0;
+	      break;
+	    }
+	}
+
+    }
+  return 0;
+  
+}
+
+
 CArray::CArray(float dist0, float fromCenter0, float Active, float Physical)
 {
   pi = acos(-1.);
@@ -130,6 +227,9 @@ CArray::CArray(float dist0, float fromCenter0, float Active, float Physical)
 CArray::~CArray()
 {
   for (int i=0;i<nTower;i++) delete Tower[i];
+  //delete Detectors;
+  mapFile.close();
+  delete map;
 }
 //**********************************************
   /**

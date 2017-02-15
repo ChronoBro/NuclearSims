@@ -31,10 +31,10 @@ int main()
   //int const Nevents =  1000;
 
   //float thickness = 188; //mg/cm2
-  //float thickness = 94;
-  float thickness = 396;
+  float thickness = 94;
+  //float thickness = 396;
   float const targetSize = 10.;
-  float CsiRes = .1275;
+  float Csi_Res = .1275;
   //float straggle = 1.01;
   float straggle = 0.;
   //float CsiRes = .113;
@@ -42,10 +42,19 @@ int main()
 
 
   CPlf plf(thickness);
-  CFrag frag1(1.,1.,Loss1,CsiRes,thickness);
-  CFrag frag2(1.,1.,Loss2,CsiRes,thickness);
-  CFrag frag3(18.,32.,Loss3,CsiRes,thickness);
+  CFrag frag1(1.,1.,Loss1,Csi_Res,thickness);
+  CFrag frag2(1.,1.,Loss2,Csi_Res,thickness);
+  CFrag frag3(18.,32.,Loss3,Csi_Res,thickness);
 
+  float zdist=405.;
+
+  detector S4(zdist,0,0); //distance from target along z-axis and thickness (if thickness=0 it speeds things up), and coordinate(not functioning now
+  S4.setGeometry(128,128,7.5,62.5,0,0,0); //zeros at end signify it is a ring
+  detector CsI1(zdist+5.,39.,0);
+  CsI1.setGeometry(1,8,35,62.5,0,0,0);
+  detector CsI2(zdist+5.,39.,0.);
+  CsI2.setGeometry(1,4,7.5,35,0,0,0);
+  
   CDecay decay(&frag1,&frag2,&frag3,einstein);
 
   float Qbreakup = decay.EkTot8B;
@@ -141,7 +150,8 @@ int main()
       hist_theta.Fill(plf.frame->theta*180./plf.pi);
       hist_phi.Fill(plf.frame->phi*180./plf.pi);
 
-      lifetime = (float)lifetime_distribution.Exp(decayconstant);
+      //lifetime = (float)lifetime_distribution.Exp(decayconstant);
+      //lifetime = 0.;
       
       xTarget = xTarget + plf.frame->v[0]*lifetime*10.; //divided by 10 to put in mm
       yTarget = yTarget + plf.frame->v[1]*lifetime*10.;
@@ -177,9 +187,43 @@ int main()
       if (frag2.targetInteraction(dthick,thickness)) continue;
       if (frag3.targetInteraction(dthick,thickness)) continue;
 
-
+      // cout << endl<< "original frag1 theta = " << frag1.real->theta << endl;
+      // cout << "original frag2 theta = " << frag2.real->theta << endl;
+      // cout << "original frag1 energy = " << frag1.real->energy << endl;
+      // cout << "original frag2 energy = " << frag2.real->energy << endl;
+      
       int nhit = frag1.hit3(xTarget, yTarget, zBreakup, straggle) + frag2.hit3(xTarget, yTarget, zBreakup,straggle);
       nhit += frag3.hit4(xTarget, yTarget, zBreakup);
+
+      int nhit1 = S4.event(frag1.real->theta, frag1.real->phi,0);
+      frag1.recon->theta = S4.thetaHit;
+      frag1.recon->phi = S4.phiHit;
+
+      
+      int nhit2 = S4.event(frag2.real->theta, frag2.real->phi,0);
+      frag1.recon->theta = S4.thetaHit;
+      frag2.recon->phi = S4.phiHit;
+
+      if(nhit1)
+      	{
+      	  frag1.recon->energy = frag1.real->energy  + sqrt(frag1.real->energy)*frag1.CsI_res*
+      	    frag1.ran.Gaus(0.,1.);
+      	  frag1.recon->getVelocity();
+	  //cout << "should be similar frag1 energy = " << frag1.recon->energy << endl;
+      	}
+      
+      if(nhit2)
+      	{
+      	  frag2.recon->energy = frag2.real->energy  + sqrt(frag2.real->energy)*frag2.CsI_res*
+      	    frag2.ran.Gaus(0.,1.);
+      	  frag2.recon->getVelocity();
+	  //cout << "should be similar frag2 energy = " << frag2.recon->energy << endl;
+      	}
+      
+      
+      nhit = nhit1 + nhit2 + frag3.hit4(xTarget, yTarget, zBreakup);
+      
+      
       //if(frag3.real->theta > frag1.Ring->theta_min)
       if(frag3.hit3(xTarget, yTarget, zBreakup, 0)==1)
       {
@@ -200,7 +244,7 @@ int main()
 	  highenergyprotons++;
 	  nhit-=1;
 	}
-      if (nhit != 3) continue;
+      if (nhit != 3 || zdist < zBreakup) continue;
 
       Ndet++;
 
@@ -208,9 +252,37 @@ int main()
       keProton.Fill(frag2.real->energy);
       keProton.Fill(frag3.real->energy);
 
-
+      int checkSeg1;
+      int checkSeg2;
+      
+      // if(CsI1.event(frag1.real->theta,frag1.real->phi,0))
+      // 	{
+      // 	  checkSeg1 = CsI1.segmentYhit;
+      // 	  if(CsI1.event(frag2.theta_prime, frag1.real->phi,0))
+      // 	    {
+      // 	      checkSeg2 = CsI1.segmentYhit;
+      // 	      if(checkSeg1==checkSeg2)
+      // 		{
+      // 		  continue;
+      // 		}
+      // 	    }		
+      // 	}
+      // else if(CsI2.event(frag1.real->theta,frag1.real->phi,0))
+      // 	{
+      // 	  checkSeg1 = CsI2.segmentYhit;
+      // 	  if(CsI2.event(frag2.theta_prime,frag2.phi_prime,0))
+      // 	    {
+      // 	      checkSeg2 = CsI2.segmentYhit;
+      // 	      if(checkSeg1==checkSeg2)
+      // 		{
+      // 		  continue;
+      // 		}
+      // 	    }
+      // 	}
+	    
 
       if (decay.OnTopOf3()) continue;
+
       NdetClean++;
 
       //correct for energy loss in half of target and get velocity

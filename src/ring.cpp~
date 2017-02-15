@@ -14,7 +14,6 @@ ring::ring(float dist0, float rmin0, float rmax0, int Nring0, int Npie0, int pla
   place = place0;
   theta_min = atan2(rmin,dist);
   theta_max = atan2(rmax,dist);
-  //cout << "theta_max = " << theta_max << endl;
   dr = (rmax-rmin)/(float)Nring;
   dtheta = (theta_max - theta_min)/(float)Nring;
   dphi = 2*acos(-1)/(float)Npie;

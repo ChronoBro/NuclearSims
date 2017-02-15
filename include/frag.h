@@ -11,6 +11,7 @@
 #include "ring.h"
 #include "ring2.h"
 #include "plane_det.h"
+#include "detector.h"
 
 using namespace std;
 
@@ -58,19 +59,19 @@ class CFrag : public fragment
   void MultiScat(float);
   bool targetInteraction(float,float);
 
-    CLoss *loss;
-    CMultScat *multScat;
-
-    CFrame *real;      //<!real particles energy, velocity, etc
-    CFrame *recon;    //<!reconstructed properties
-
-    bool alphaHole(int,int,int,int);
-    bool protonHole(int,int,int,int);
-
-    ring * Ring;
-    ring * RingCsI;
-    ring * Inactive;
-    plane_det * Plane;
+  CLoss *loss;
+  CMultScat *multScat;
+  
+  CFrame *real;      //<!real particles energy, velocity, etc
+  CFrame *recon;    //<!reconstructed properties
+  
+  bool alphaHole(int,int,int,int);
+  bool protonHole(int,int,int,int);
+  
+  ring * Ring;
+  ring * RingCsI;
+  ring * Inactive;
+  plane_det * Plane;
 
 };
 

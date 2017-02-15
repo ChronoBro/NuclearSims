@@ -119,27 +119,22 @@ int CFrag::hit3(float xtarget,float ytarget, float zbreakup, float straggle)
 //       cout << endl;
 //     }
 //  cout << "phi here is " <<  phi_prime << endl;
-  //is_hit = Ring->hit(theta_prime,phi_prime);
-  is_hit = Ring->hit(real->theta, real->phi);
+  is_hit = Ring->hit(theta_prime,phi_prime);
   //  cout << endl;
   //  cout << "now going to CsI " << endl;
   //  cout << "phi_CsI is " << phi_prime_CsI << endl;
   int dum1 = RingCsI->hit(theta_prime_CsI,phi_prime_CsI);
   //  cout << endl;
 
-
-  //cout << "Csi res = " << CsI_res << endl;
   if (is_hit == 1 && dum1 == 1) 
     {
 
-      //cout << "culprit? Ring->thetaHit = " << Ring->thetaHit << endl;
       recon->theta = Ring->thetaHit;
       recon->phi = Ring->phiHit;
 
       recon->energy = real->energy + sqrt(real->energy)*CsI_res*
-	ran.Gaus(0.,1.);
+       ran.Gaus(0.,1.);
 
-      //cout << "culprit? recon->energy = " << recon->energy << endl;
       //recon->energy = real->energy + real->energy*CsI_res*
       // ran.Gaus(0.,1.);
 

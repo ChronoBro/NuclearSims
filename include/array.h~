@@ -5,7 +5,6 @@
 #include "tower.h"
 #include <string>
 #include <fstream>
-#include "detector.h"
 
 using namespace std;
 
@@ -21,16 +20,13 @@ class CArray
  public:
   CTower * Tower[5]; //!< parameter of each tower 
   CArray(float dist0, float fromCenter0, float Active, float Physical);
-  CArray(int Ndetectors,char * nameMapFile);
   ~CArray();
   int hit(float,float,float,float);
   int hitTower; //!< number of tower in which fragment was detected
   float pi;   //!< 3.14159...
   int nTower; //!< number of towers in the array
-  vector<detector> Detectors;
-  int setMap();
-  int cleanDetection(int,int,int,int,int);
-  int Ndetectors;
+
+
   float thetaRecon; //!< reconstructed theta angle in radians of detected fragment
   float phiRecon;   //!< reconstructed phi angle in radians
 
@@ -43,11 +39,7 @@ class CArray
   float yActive;
   float dist;
 
- private:
 
-  int ** map;
-  int total;
-  ifstream mapFile;
 
 };
 
