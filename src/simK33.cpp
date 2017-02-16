@@ -34,8 +34,8 @@ int main()
   //int const Nevents =  1000;
 
   //float thickness = 188; //mg/cm2
-  //float thickness = 94;
-  float thickness = 396;
+  float thickness = 94;
+  //float thickness = 396;
   float const targetSize = 10.;
   float Csi_Res = .1275;
   //float straggle = 1.01;

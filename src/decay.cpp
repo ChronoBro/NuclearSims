@@ -691,7 +691,7 @@ float CDecay::getEk3()
 
 void CDecay::getJacobi(CFrame**part,bool com)
 {
-  if(Nfrags!=2)
+  if(Nfrags!=3)
     {
       cout << "what are you doing trying to calculate a jacobi coordinate without 3-particle decay?" << endl;
       return;

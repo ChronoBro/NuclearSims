@@ -295,7 +295,10 @@ int main()
 	      continue;
 	    }
 	}
-
+      else
+	{
+	  continue;
+	}
       
 
 	  
