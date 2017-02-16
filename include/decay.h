@@ -58,7 +58,7 @@ class CDecay
   void ModeMoscow();
   void ModeMicroCanonical();
   void ModeMicroCanonicalBe();
-  void micro(int,CFrame**,float,float);
+  void micro(CFrame**,float,float);
   void getEk6Be(CFrame**);
   float getEk3body(CFrame*,CFrame*,CFrame*);
   float getEk3bodyNewton(CFrame*,CFrame*,CFrame*);

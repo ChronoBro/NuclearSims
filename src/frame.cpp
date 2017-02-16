@@ -159,7 +159,9 @@ void CFrame::transformVelocityRel(float * vReference)
       vFinalPara[i] = (vPara[i] + vReference[i])/(1.+dot/cc);
       vFinalPerp[i] = vPerp[i]*bb/(1.+dot/cc);
       v[i] = vFinalPara[i] + vFinalPerp[i];
+      vv += pow(v[i],2.);
     }
+   velocity = sqrt(vv);
   getEnergyRel();
 }
 //***********************************************************

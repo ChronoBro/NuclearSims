@@ -252,8 +252,11 @@ int main()
 	  highenergyprotons++;
 	  nhit-=1;
 	}
-      if (nhit != 3 || zdist < zBreakup) continue;
-
+      if (nhit != 3 || zdist < zBreakup)
+	{
+	  continue;
+	}
+      
       Ndet++;
 
       keProton.Fill(frag1.real->energy);
@@ -262,6 +265,11 @@ int main()
 
       int checkSeg1;
       int checkSeg2;
+
+      if( frag3.theta_prime > atan2(6.5,zdist) ) //to make sure the residue goes down the hole
+	{
+	  continue;
+	}
       
       if(CsI1.event(frag1.theta_prime_CsI,frag1.phi_prime_CsI,0))
       	{

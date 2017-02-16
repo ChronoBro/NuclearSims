@@ -34,14 +34,16 @@ int main()
   //int const Nevents =  1000;
 
   //float thickness = 188; //mg/cm2
-  float thickness = 94;
-  //float thickness = 396;
+  //float thickness = 94;
+  float thickness = 396;
   float const targetSize = 10.;
   float Csi_Res = .1275;
   //float straggle = 1.01;
   float straggle = 0.;
   //float CsiRes = .113;
 
+  float zdist=300.;
+  
   float EPA0 = 70;  
   //energy loss in 1/2 of target
   //float epa2_mean = Ploss.getEout(EPA0*plfMass,thickness/2.)/plfMass;
@@ -61,7 +63,7 @@ int main()
   CFrag frag2(1.,1.,Loss2,Csi_Res,thickness);
   CFrag frag3(18.,32.,Loss3,Csi_Res,thickness);
 
-  float zdist=405.;
+ 
 
   detector S4(zdist,0,0); //distance from target along z-axis and thickness (if thickness=0 it speeds things up), and coordinate(not functioning now
   S4.setGeometry(128,128,7.5,62.5,0,0,0); //zeros at end signify it is a ring
@@ -97,6 +99,7 @@ int main()
   TH2S map_Erel_dthick("Erel_dthick","Erel_dthick",200,1.5,4.5,100,0,1000);
   TH2S map_Erel6Be_dthick("Erel6Be_dthick","Erel6Be_dthick",200,-1.,1.,100,0,1000);
 
+  TH2F hist_Ep_cosTheta("Ep_cosTheta","Ep_cosTheta",100,-1,1,50,0,5);
 
   TH2S coreXY_s("coreXY_s","alphaxy",250,-20,20,250,-13,13);
 
@@ -296,7 +299,7 @@ int main()
       
       hist_theta_R.Fill(decay.plfRecon->theta*180./3.1459);
       hist_vel_R.Fill(decay.plfRecon->velocity);
-
+      hist_Ep_cosTheta.Fill(decay.partCM[0]->v[2]/decay.partCM[0]->velocity,ErelR);
       //cout << "decay.plfRecon->theta*180./3.14159 = " << decay.plfRecon->theta*180./3.1415927 << endl;
       
     
@@ -342,7 +345,7 @@ int main()
   hist_Erel.Write();
   hist_theta_R.Write();
   hist_vel_R.Write();
-
+  hist_Ep_cosTheta.Write();
 
   keAlpha.Write();
   keProton.Write();

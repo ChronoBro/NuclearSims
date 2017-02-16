@@ -40,7 +40,7 @@ CFrag::CFrag(float Z0,float mass0, string filename, float CsI_res0,
   //RingCsI1 = new ring(332.,7.5,62.5,128,128);
   //RingCsI = new ring(315.,7.5,62.5,128,128); // 0 thickness
 
-  Plane = new plane_det(445.,20.,20.,0.95);
+  Plane = new plane_det(345.,20.,20.,0.95);
 
 
 }

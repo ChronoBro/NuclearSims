@@ -356,7 +356,7 @@ void CDecay::ModeMicroCanonical()
   //EkTot = 1.476;
   EkTot = 1.96; 
   
-  micro(Nfrags,real,EkTot,sumA);
+  micro(real,EkTot,sumA);
 }
 
 //************************************************************
@@ -472,7 +472,7 @@ bool CDecay::leaveCsI()
   return 0;
 }
   //*****************************
-    void CDecay::micro(int N,CFrame **Frag,float Ektot,float massTot)
+    void CDecay::micro(CFrame **Frag,float Ektot,float massTot)
 {
   valarray <float> vcm(3);
   for (int i=0;i<Nfrags;i++)
