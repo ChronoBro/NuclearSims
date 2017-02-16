@@ -122,7 +122,7 @@ int main()
   float mean =0.;
   float sig = 0.;
 
-  double decayconstant = 0.1; //in ns
+  double decayconstant =15.; //in ns
   float lifetime = 0;
 
   int Ndet = 0;
@@ -361,9 +361,11 @@ int main()
 	  JacobiT_y3_s.Fill(-decay.CosTheta_T);
 	}
 
-
-      JacobiY_x_s.Fill(decay.x_Y[0]);
-      JacobiY_x_s.Fill(decay.x_Y[1]);
+      //cout << "decay.Etot: " << decay.Etot << endl;
+      //cout << "checking frag1->energy: " << decay.Ep << endl;
+      //cout << "checking Jacobi Y: " << decay.frag[0]->energy/decay.Etot << endl;
+      JacobiY_x_s.Fill(decay.Ep/decay.Etot);
+      JacobiY_x_s.Fill(decay.Ep2/decay.Etot);
       JacobiY_y_s.Fill(-decay.CosTheta_Y[0]);
       JacobiY_y_s.Fill(-decay.CosTheta_Y[1]);
       JacobiY_xy_s.Fill(decay.x_Y[0],-decay.CosTheta_Y[0]);

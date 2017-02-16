@@ -355,8 +355,15 @@ void CDecay::ModeMicroCanonical()
   //EkTot = 2.2; // ground state
   //EkTot = 1.476;
   EkTot = 1.96; 
+  if(Nfrags==3) //if you want to restrict the Jacobi Coordinates
+    {
+      fixedMicro(real,EkTot,sumA);
+    }
+  else
+    {
+      micro(real,EkTot,sumA);
+    }
   
-  micro(real,EkTot,sumA);
 }
 
 //************************************************************
@@ -471,9 +478,13 @@ bool CDecay::leaveCsI()
     }
   return 0;
 }
-  //*****************************
-    void CDecay::micro(CFrame **Frag,float Ektot,float massTot)
+
+
+
+//*****************************
+void CDecay::micro(CFrame **Frag,float Ektot,float massTot)
 {
+
   valarray <float> vcm(3);
   for (int i=0;i<Nfrags;i++)
     {
@@ -507,7 +518,41 @@ bool CDecay::leaveCsI()
       for (int j=0;j<Nfrags;j++) Frag[i]->v[j] *= ratio;
     }
 
+    
 }
+
+
+//this was made to restrict the jacobi y coordinate
+void CDecay::fixedMicro(CFrame **Frag, float Ektot, float massTot)
+{
+  int count=0;
+  do
+    {
+      Etot=0;
+      Ep=0.;
+      Ep2=0.;
+ 
+      micro(Frag,Ektot,massTot);
+      Ep = Frag[0]->energy;
+      Ep2 = Frag[1]->energy;
+      for(int i=0;i<Nfrags;i++)
+	{
+	  Etot += Frag[i]->energy;
+	}
+      count++;
+      if(count > 100000)
+      	{
+      	  //cout << "exiting fixedMicro loop" << endl;
+      	  break;
+      	}
+
+      
+    } while(Frag[0]->energy/Etot < 0.3 || Frag[0]->energy/Etot > 0.7);
+
+
+}
+
+
 
 void CDecay::Mode(double ET, double Ex, double mass1, double mass2)
 {

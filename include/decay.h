@@ -27,7 +27,10 @@ class CDecay
   float x_T;
   float x_Y[2];
   float CosTheta_Y[2];
-
+  float Etot;
+  float Ep;
+  float Ep2;
+  
   void getJacobi(CFrame**,bool);
   void getJacobiPrimary();
   void getJacobiSecondary();
@@ -59,6 +62,7 @@ class CDecay
   void ModeMicroCanonical();
   void ModeMicroCanonicalBe();
   void micro(CFrame**,float,float);
+  void fixedMicro(CFrame**,float,float);
   void getEk6Be(CFrame**);
   float getEk3body(CFrame*,CFrame*,CFrame*);
   float getEk3bodyNewton(CFrame*,CFrame*,CFrame*);
