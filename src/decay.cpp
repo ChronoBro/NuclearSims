@@ -59,7 +59,7 @@ CDecay::CDecay(CFrag * part10, CFrag *part20,bool einstein0)
 {
 
   Nfrags = 2;
-  //frag6Be = new CFrame (massFrame);
+  //frag6Be = new CFrame (6);
 
   einstein = einstein0;
   CFrame::einstein = einstein;
@@ -76,12 +76,12 @@ CDecay::CDecay(CFrag * part10, CFrag *part20,bool einstein0)
   recon[1] = part20->recon;
 
   sumA = 0.;
-  for (int i=0;i<2;i++) sumA += real[i]->A;
+  for (int i=0;i<Nfrags;i++) sumA += real[i]->A;
 
   plfRecon = new CFrame(sumA);
 
 
-  for (int i=0;i<2;i++) 
+  for (int i=0;i<Nfrags;i++) 
     {
      partCM[i] = new CFrame(real[i]->A);
     }
@@ -257,14 +257,26 @@ float CDecay::getErelRel(CFrame **part)
   plfRecon->theta = acos(plfRecon->v[2]/plfRecon->velocity);
 
 
-
   for (int j=0;j<Nfrags;j++)
-    for (int i=0;i<3;i++) partCM[j]->v[i] = part[j]->v[i];
+    {
+    for (int i=0;i<3;i++)
+      {
+	partCM[j]->v[i] = part[j]->v[i];
+      }
+    }
+  //we want to "subtract" the velocity to get to the CoM frame
+  float vReference[3];
+  for (int i=0;i<3;i++)
+    {
+      vReference[i] = -1*plfRecon->v[i];
+    }
 
+  
+  
   ErelRecon = 0.;
    for (int j=0;j<Nfrags;j++)
      {
-       partCM[j]->transformVelocity(plfRecon->v);
+       partCM[j]->transformVelocity(vReference);
        ErelRecon += partCM[j]->getEnergy();
      }
 

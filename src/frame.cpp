@@ -132,6 +132,7 @@ void CFrame::transformVelocityRel(float * vReference)
   float vPerp[3];
   float dot = 0.;
   float VVreference = 0.;
+  
   for (int i=0;i<3;i++) 
     {
       dot+= v[i]*vReference[i];
@@ -179,7 +180,7 @@ void CFrame::getVelocityFromMomRel()
   for (int i=0;i<3;i++) pcTot += pow(pc[i],2);
   pcTot = sqrt(pcTot);
   velocity = pcTot/totEnergy*c;
-  for (int i=0;i<3;i++) v[i] = -pc[i]/pcTot*velocity;
+  for (int i=0;i<3;i++) v[i] = pc[i]/pcTot*velocity; //this used to be negative so that when you want to change frames you don't need to change the reference, but this is dumb! since it screws some stuff up later
   getAngle();
 }
 //******************************************

@@ -57,7 +57,7 @@ int main()
 
 
   CPlf plf(thickness);
-  CFrag frag1(1.,1.,Loss1,Csi_Res,thickness);
+  //CFrag frag1(1.,1.,Loss1,Csi_Res,thickness);
   CFrag frag2(1.,1.,Loss2,Csi_Res,thickness);
   CFrag frag3(18.,32.,Loss3,Csi_Res,thickness);
 
@@ -191,21 +191,26 @@ int main()
 
       int nhit;
       int nhit1 = S4.event(frag2.real->theta, frag2.real->phi,0);//(frag1.real->theta, frag1.real->phi,0);
-      frag2.recon->theta = S4.thetaHit;
-      frag2.recon->phi = S4.phiHit;
-
-      
+           
       // int nhit2 = S4.event(frag2.theta_prime, frag3.phi_prime,0);
       // frag2.recon->theta = S4.thetaHit;
       // frag2.recon->phi = S4.phiHit;
 
       if(nhit1)
       	{
+	  frag2.recon->theta = S4.thetaHit;
+	  frag2.recon->phi = S4.phiHit;
       	  frag2.recon->energy = frag2.real->energy  + sqrt(frag2.real->energy)*frag2.CsI_res*
-      	    frag1.ran.Gaus(0.,1.);
+      	    frag2.ran.Gaus(0.,1.);
       	  frag2.recon->getVelocity();
 	  //cout << "should be similar frag1 energy = " << frag1.recon->energy << endl;
-      	}
+	  //cout << endl << "frag2.real->theta = " << frag2.real->theta << endl;
+	  //cout << "frag2.recon->theta = " << frag2.recon->theta << endl;
+
+	}
+
+      
+      
       
       // if(nhit2)
       // 	{
@@ -232,38 +237,42 @@ int main()
       int checkSeg1;
       int checkSeg2;
       
-      // if(CsI1.event(frag1.theta_prime_CsI,frag1.phi_prime_CsI,0))
-      // 	{
-      // 	  checkSeg1 = CsI1.segmentYhit;
-      // 	  if(CsI1.event(frag2.theta_prime_CsI, frag2.phi_prime_CsI,0))
-      // 	    {
-      // 	      checkSeg2 = CsI1.segmentYhit;
-      // 	      if(checkSeg1==checkSeg2)
-      // 		{
-      // 		  continue;
-      // 		}
-      // 	    }
-      // 	  else if(!CsI2.event(frag2.theta_prime_CsI, frag2.phi_prime_CsI,0))
-      // 	    {
-      // 	      continue;
-      // 	    }
-      // 	}
-      // else if(CsI2.event(frag1.theta_prime_CsI,frag1.phi_prime_CsI,0))
-      // 	{
-      // 	  checkSeg1 = CsI2.segmentYhit;
-      // 	  if(CsI2.event(frag2.theta_prime_CsI,frag2.phi_prime_CsI,0))
-      // 	    {
-      // 	      checkSeg2 = CsI2.segmentYhit;
-      // 	      if(checkSeg1==checkSeg2)
-      // 		{
-      // 		  continue;
-      // 		}
-      // 	    }
-      // 	  else if(!CsI1.event(frag2.theta_prime_CsI, frag2.phi_prime_CsI,0))
-      // 	    {
-      // 	      continue;
-      // 	    }
-      // 	}
+      if(CsI1.event(frag2.real->theta,frag2.real->phi,0))
+      	{
+      	  checkSeg1 = CsI1.segmentYhit;
+      	  if(CsI1.event(frag3.real->theta, frag3.real->phi,0))
+      	    {
+      	      checkSeg2 = CsI1.segmentYhit;
+      	      if(checkSeg1==checkSeg2)
+      		{
+      		  continue;
+      		}
+      	    }
+      	  // else if(!CsI2.event(frag3.real->theta, frag3.real->phi,0))
+      	  //   {
+      	  //     continue;
+      	  //   }
+      	}
+      else if(CsI2.event(frag2.real->theta,frag2.real->phi,0))
+      	{
+      	  checkSeg1 = CsI2.segmentYhit;
+      	  if(CsI2.event(frag3.real->theta,frag3.real->phi,0))
+      	    {
+      	      checkSeg2 = CsI2.segmentYhit;
+      	      if(checkSeg1==checkSeg2)
+      		{
+      		  continue;
+      		}
+      	    }
+      	  // else if(!CsI1.event(frag3.real->theta, frag3.real->phi,0))
+      	  //   {
+      	  //     continue;
+      	  //   }
+      	}
+      else
+      	{
+      	  continue;
+      	}
 
       
 
@@ -274,7 +283,7 @@ int main()
 
       //correct for energy loss in half of target and get velocity
       
-      //frag1.Egain(thickness/2.);
+      //frag2.Egain(thickness/2.);
       frag2.Egain(thickness/2.);
       frag3.Egain(thickness/2.);
 
@@ -284,6 +293,7 @@ int main()
 
       //float ErelR = decay.getEk5();
       hist_Erel.Fill(ErelR);
+      
       hist_theta_R.Fill(decay.plfRecon->theta*180./3.1459);
       hist_vel_R.Fill(decay.plfRecon->velocity);
 

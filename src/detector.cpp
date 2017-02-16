@@ -71,7 +71,8 @@ int detector::setGeometryFront(int nRing, int Npie, float rmin, float rmax)
 	  Location[iring][ipie].fthetaMax = asin(fperp/Location[iring][ipie].fr);
 	  Location[iring][ipie].fthetaMin = asin((fperp - dr)/Location[iring][ipie].fr);
 	  Location[iring][ipie].fdtheta = Location[iring][ipie].fthetaMax -  Location[iring][ipie].fthetaMin;
-  
+
+	  //cout << "front thetaMax = " << Location[iring][ipie].fthetaMax << endl;
 	  
 	  Location[iring][ipie].fphiMin = 2.*3.1415927*(float)(ipie-Npie/2.)/(float)Npie;//atan2(Location[iring][ipie].fy, Location[iring][ipie].fx);
 	  Location[iring][ipie].fphiMax = 2.*3.1415927*(float)(ipie+1 - Npie/2.)/(float)Npie;//atan2(Location[iring][ipie].by, Location[iring][ipie].bx);
@@ -120,7 +121,7 @@ int detector::setGeometryBack(int nRing, int Npie, float rmin, float rmax)
 	  Location[iring][ipie].bthetaMin = asin((bperp - dr)/Location[iring][ipie].br);
 	  Location[iring][ipie].bdtheta = Location[iring][ipie].bthetaMax -  Location[iring][ipie].bthetaMin; 
 
-	  //cout << "back thetaMax = " << Location[iring][ipie].bthetaMax << endl;
+
 	  
 	  //Location[iring][ipie].fphiMin = atan2(Location[iring][ipie].fy, Location[iring][ipie].fx);
 	  //Location[iring][ipie].fphiMax = atan2(Location[iring][ipie].by, Location[iring][ipie].bx);
@@ -230,7 +231,7 @@ int detector::event(float theta0, float phi0, int coordinate0) //assumes particl
 			{
 			  //cout << "theta0 = " << theta0 << endl;			  			  
 			  thetaHit = Location[ix][iy].fthetaMin + xR*Location[ix][iy].fdtheta;
-			  thetaHit = atan2( (xR+(float)ix)*dr + Location[0][0].fy - dr, zD  );
+			  //thetaHit = atan2( (xR+(float)ix)*dr + Location[0][0].fy - dr, zD  );
 			  //cout << "thetaHit = " << thetaHit << endl;
 			  phiHit = Location[ix][iy].fphiMin + yR*Location[ix][iy].fdphi;
 			  segmentXhit = ix;
