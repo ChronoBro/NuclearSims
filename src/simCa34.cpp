@@ -120,7 +120,7 @@ int main()
   float mean =0.;
   float sig = 0.;
 
-  double decayconstant = 0.1; //in ns
+  double decayconstant = 10; //in ns
   float lifetime = 0;
 
   int Ndet = 0;

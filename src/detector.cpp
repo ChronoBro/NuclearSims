@@ -120,7 +120,7 @@ int detector::setGeometryBack(int nRing, int Npie, float rmin, float rmax)
 	  Location[iring][ipie].bthetaMin = asin((bperp - dr)/Location[iring][ipie].br);
 	  Location[iring][ipie].bdtheta = Location[iring][ipie].bthetaMax -  Location[iring][ipie].bthetaMin; 
 
-	  cout << "back thetaMax = " << Location[iring][ipie].bthetaMax << endl;
+	  //cout << "back thetaMax = " << Location[iring][ipie].bthetaMax << endl;
 	  
 	  //Location[iring][ipie].fphiMin = atan2(Location[iring][ipie].fy, Location[iring][ipie].fx);
 	  //Location[iring][ipie].fphiMax = atan2(Location[iring][ipie].by, Location[iring][ipie].bx);
