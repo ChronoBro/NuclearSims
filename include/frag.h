@@ -51,6 +51,7 @@ class CFrag : public fragment
   float phi_prime;
   float phi_prime_CsI;
 
+  void setPosition(float *);
   void SetVelocity(float*,float*);
   void AddVelocity(float*);
   void AddVelocityRel(float*);
@@ -58,7 +59,9 @@ class CFrag : public fragment
   float Egain(float); // corrects for energy loss in target
   void MultiScat(float);
   bool targetInteraction(float,float);
-
+  float p[3];
+  void propagate(double tau); //put time in ns. Remember speed is in cm/ns but geometry is in mm!!!!!
+  
   CLoss *loss;
   CMultScat *multScat;
   

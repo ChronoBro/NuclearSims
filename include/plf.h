@@ -20,6 +20,7 @@ class CPlf
   float theta; //!< theta angle of parent fragment in radians
   float phi; //!< phi angle
   float v[3]; //!< velcoity vector of parent fragment in cm/ns
+  float p[3]; // vector showing position of point
 
   float theta_breakup;
   float phi_breakup;
@@ -38,4 +39,8 @@ class CPlf
   //CMomDist momDist;
   CMultScat *multScat;
   void MultiScat(float);
+  void propagate(double);
+  void setBeamSpot(double);
+  void setLifetime(double);
+  
 };

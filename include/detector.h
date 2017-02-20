@@ -21,6 +21,13 @@ struct location
   double bx,by,bz;
   double br,bthetaMin,bphiMin, bthetaMax, bphiMax;
   double bdtheta, bdphi;
+
+  double p1[3];
+  double p2[3];
+  double p3[3];
+  double p4[3];
+
+
   
 };
 

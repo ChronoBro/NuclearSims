@@ -1,0 +1,25 @@
+#ifndef _detector
+#define _detector
+
+#include "math.h"
+#include "ring.h"
+#include "ttt.h"
+#include "random.h"
+
+using namespace std;
+
+
+
+
+class planeSegment
+{
+ public:
+
+
+ private:
+
+};
+
+
+
+#endif

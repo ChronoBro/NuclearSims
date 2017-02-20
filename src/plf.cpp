@@ -16,6 +16,11 @@ CPlf::CPlf(float thickness)
   frame = new CFrame(8.);
   float thick = thickness/1000./9.*6.02e23; // atoms/ cem2
   multScat =  new CMultScat(6,4,thick);
+
+  p[0] = 0.;
+  p[1] = 0.;
+  p[2] = 0.;
+  
 }
 //********************************************
   /**
@@ -93,7 +98,7 @@ void CPlf::GetPlf()
 
 }
 
-void CPlf::GetPlf(float Pbeam0, int mass)
+void CPlf::GetPlf(float EPA0, int mass)
 {
   // float vv;
   // if (ran.Rndm()>0.2) vv = ran.Gaus(11.01,.2);
@@ -134,7 +139,8 @@ void CPlf::GetPlf(float Pbeam0, int mass)
   
   ptr = 0.; //momDist.getTransMom(); could make these gaussian or something
   pz = 0.; //momDist.getLongMom();
-  pbeam = Pbeam0;
+
+  pbeam = sqrt(pow((EPA0+931.478)*mass,2)-pow(931.478*mass,2));
   
   float theta = 0.;
   theta = atan2(ptr, pz + pbeam);
@@ -252,5 +258,29 @@ void CPlf::MultiScat(float fractionalThick)
   frame->v[0] = frame->velocity*cos(phiNew)*sin(thetaNew);
   frame->v[1] = frame->velocity*sin(phiNew)*sin(thetaNew);
   frame->v[2] = frame->velocity*cos(thetaNew);
+  
+}
+
+void CPlf::propagate(double tau)
+{
+  p[0] = tau*v[0] + p[0];
+  p[1] = tau*v[1] + p[1];
+  p[2] = tau*v[2] + p[2];
+
+}
+
+void CPlf::setBeamSpot(double targetSize)
+{
+  p[0] = (1.-2.*ran.Rndm())/2.*targetSize;
+  p[1] = (1.-2.*ran.Rndm())/2.*targetSize;
+
+}
+
+void CPlf::setLifetime(double decayConstant)
+{
+
+  TRandom eRan(0);
+  float lifetime = (float)eRan.Exp(frame->gamma*decayConstant);
+  propagate((double)lifetime);
   
 }

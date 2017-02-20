@@ -122,7 +122,7 @@ int main()
   float mean =0.;
   float sig = 0.;
 
-  double decayconstant =15.; //in ns
+  double decayconstant =15; //in ns
   float lifetime = 0;
 
   int Ndet = 0;
@@ -147,6 +147,7 @@ int main()
       yTarget = (1.-2.*plf.ran.Rndm())/2.*targetSize;
 
       plf.GetPlf();
+      plf.setBeamSpot(targetSize);
       //multiple scattering of plf
       if (thickness > 0.)  plf.MultiScat(1.-dthick/thickness);
 
@@ -165,6 +166,8 @@ int main()
       yTarget = yTarget + plf.frame->v[1]*lifetime*10.;
       zBreakup = lifetime*plf.frame->v[2]*10.;
 
+      plf.setLifetime(decayconstant);
+      
       //ofile << lifetime << " " << zBreakup << endl;
 
       //now break up plf
@@ -188,6 +191,9 @@ int main()
       frag2.AddVelocity(plf.frame->v);
       frag3.AddVelocity(plf.frame->v);
 
+      frag1.setPosition(plf.p);
+      frag2.setPosition(plf.p);
+      frag3.setPosition(plf.p);
 
 
       //interaction in target, continue if stopped

@@ -42,6 +42,10 @@ CFrag::CFrag(float Z0,float mass0, string filename, float CsI_res0,
 
   Plane = new plane_det(345.,20.,20.,0.95);
 
+  p[0]=0.; //initialize particle at the origin
+  p[1]=0.;
+  p[2]=0.;
+  
 
 }
 //*********************************************************
@@ -738,4 +742,23 @@ bool CFrag::alphaHole(int itower, int itele, int ifront, int iback)
 
 
   return true;
+}
+
+void CFrag::setPosition(float * p0)
+{
+  p[0] = p0[0];
+  p[1] = p0[1];
+  p[2] = p0[2];
+
+}
+
+
+
+void CFrag::propagate(double tau)
+{
+  p[0] = real->v[0]*tau + p[0];
+  p[1] = real->v[1]*tau + p[1];
+  p[2] = real->v[2]*tau + p[2];
+
+  
 }

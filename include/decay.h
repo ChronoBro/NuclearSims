@@ -57,7 +57,7 @@ class CDecay
   float getErelNewton(CFrame**);
   float getErelRel(CFrame**);
 
-  void Mode(double,double,double,double);
+  void Mode(double,double);
   void ModeMoscow();
   void ModeMicroCanonical();
   void ModeMicroCanonicalBe();

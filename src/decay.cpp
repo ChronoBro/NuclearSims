@@ -554,7 +554,7 @@ void CDecay::fixedMicro(CFrame **Frag, float Ektot, float massTot)
 
 
 
-void CDecay::Mode(double ET, double Ex, double mass1, double mass2)
+void CDecay::Mode(double ET, double Ex)
 {
 
   //double ET_mean = 0.3111  ;//Q = -7.268
@@ -568,23 +568,35 @@ void CDecay::Mode(double ET, double Ex, double mass1, double mass2)
       
   //  }
 
-  double Et = ET + Ex;
+  if(Nfrags==2)
+    {
+  
+      float mass1 = (float)real[0]->A;
+      float mass2 = (float)real[1]->A;;
+      
+      
+      double Et = ET + Ex;
+      
+      double mu = mass1*mass2/(mass1+mass2);
+      double vrel = sqrt(2.*Et/mu)*.9784;
+      double v1 = vrel*mass2/(mass1+mass2);
+      double v2 = vrel - v1;
 
-  double mu = mass1*mass2/(mass1+mass2);
-  double vrel = sqrt(2.*Et/mu)*.9784;
-  double v1 = vrel*mass2/(mass1+mass2);
-  double v2 = vrel - v1;
+
+      double theta = acos(1.-2.*ran.Rndm());
+      double phi = 2.*acos(-1.)*ran.Rndm();
+      real[0]->v[0] = v1*sin(theta)*cos(phi);
+      real[0]->v[1] = v1*sin(theta)*sin(phi);
+      real[0]->v[2] = v1*cos(theta);
 
 
-  double theta = acos(1.-2.*ran.Rndm());
-  double phi = 2.*acos(-1.)*ran.Rndm();
-  real[0]->v[0] = v1*sin(theta)*cos(phi);
-  real[0]->v[1] = v1*sin(theta)*sin(phi);
-  real[0]->v[2] = v1*cos(theta);
-
-
-  for (int i=0;i<3;i++) real[1]->v[i] = -v2/v1*real[0]->v[i];
-
+      for (int i=0;i<3;i++) real[1]->v[i] = -v2/v1*real[0]->v[i];
+    }
+  else
+    {
+      cout << "decay.Mode doesn't support 3 body decays currently" << endl;
+      abort();
+    }
 
 
 }

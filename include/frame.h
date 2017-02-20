@@ -16,7 +16,7 @@ class CFrame
   float energy;  //!< fragments energy in MeV
   float velocity; //!< fragments velocity in cm/ns 
   float pcTot;  //!< total momentum*c of fragment
-  float v[3];  //!< velocity vector of fragment
+  float v[3];  //!< velocity vector of fragment in cm/ns
   float pc[3]; //!< momentum*c vector of fragment MeV
   float mass;  //!< rest mass of fragment in MeV
   float A;

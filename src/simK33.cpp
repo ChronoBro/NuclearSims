@@ -47,13 +47,13 @@ int main()
   float EPA0 = 70;  
   //energy loss in 1/2 of target
   //float epa2_mean = Ploss.getEout(EPA0*plfMass,thickness/2.)/plfMass;
-  float Pbeam2_mean = sqrt(pow((EPA0+931.478)*plfMass,2)-pow(plfMass*931.478,2));
+
 
 
   //reaction center of mass velocity
-  float Ecm = (EPA0+931.478)*plfMass + targetMass*931.478;
-  float pcm = Pbeam2_mean;
-  float vCM = pcm/Ecm*30.;
+  //float Ecm = (EPA0+931.478)*plfMass + targetMass*931.478;
+  //float pcm = Pbeam2_mean;
+  //float vCM = pcm/Ecm*30.;
 
   
 
@@ -129,7 +129,7 @@ int main()
   float yTarget = 0.;
   float zBreakup = 0.;
 
-  cout << endl << "Pbeam set to: " << Pbeam2_mean << endl << endl;
+  //cout << endl << "Pbeam set to: " << Pbeam2_mean << endl << endl;
 
   for (int i=0;i<Nevents;i++)
     {
@@ -140,7 +140,7 @@ int main()
       yTarget = (1.-2.*plf.ran.Rndm())/2.*targetSize;
 
    
-      plf.GetPlf(Pbeam2_mean,plfMass);
+      plf.GetPlf(EPA0,plfMass);
       //multiple scattering of plf
       if (thickness > 0.)  plf.MultiScat(1.-dthick/thickness);
 
@@ -153,8 +153,6 @@ int main()
       //lifetime = (float)lifetime_distribution.Exp(plf.frame->gamma*decayconstant);
       //lifetime = 0.;
 
-      
-      
       xTarget = xTarget + plf.frame->v[0]*lifetime*10.; //divided by 10 to put in mm
       yTarget = yTarget + plf.frame->v[1]*lifetime*10.;
       zBreakup = lifetime*plf.frame->v[2]*10.;
@@ -168,7 +166,7 @@ int main()
       
       //decay.ModeMoscow(); //sequential micro+P26Be
       //decay.ModeMicroCanonical();
-      decay.Mode(1.96,0.,1.,32.);
+      decay.Mode(1.96,0.);
 
        //frag1.AddVelocity(plf.frame->v);
       frag2.AddVelocity(plf.frame->v);
