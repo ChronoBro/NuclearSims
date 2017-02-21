@@ -53,6 +53,13 @@ int detector::setGeometry(int nRing, int Npie, float rmin, float rmax)
   return 1;
 }
 
+int detector::findDetNormal(double* &p1, double* &p2, double* &p3)
+{
+  detPlane.findNormal(p1,p2,p3);
+  return 1;
+}
+
+
 int detector::setDetNormal(double * n)
 {
   detPlane.setNormal(n);

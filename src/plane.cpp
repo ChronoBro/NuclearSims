@@ -20,7 +20,7 @@ plane::plane(double * n0, double * p0) //p will be plane center, normX & normY w
 
 }
 
-void plane::findNormal(double *p10, double *p20, double *p30, double*p40)
+void plane::findNormal(double *p10, double *p20, double *p30)
 {
 
   double cross1[3];
@@ -30,7 +30,7 @@ void plane::findNormal(double *p10, double *p20, double *p30, double*p40)
   for (int i=0;i<3;i++)
     {
       cross1[i] = p20[i] - p10[i];
-      cross2[i] = p40[i] - p30[i];
+      cross2[i] = p30[i] - p10[i];
     }
   
   n[0] = cross1[1]*cross2[2] - cross1[2]*cross2[1];
@@ -52,6 +52,17 @@ void plane::findNormal(double *p10, double *p20, double *p30, double*p40)
       n[i] = n[i]/mag;
     }
 
+  //check that it's pointing towards center
+  double dot;
+
+  dot = n[0]*p[0] + n[1]*p[1] + n[2]*p[2];
+  if(dot > 0)
+    {
+      for(int i=0;i<3;i++)
+	{
+	  n[i] = -1.*n[i];
+	}
+    }
 
 }
 

@@ -49,6 +49,7 @@ class detector
   int setGeometryFront(int,int,float,float,float,float,int);
   int setGeometryBack(int,int,float,float,float,float,int);
   int setDetNormal(double*);
+  int findDetNormal(double * &p1, double * &p2, double * &p3);
   double * labCoordinates();
   
   int Nx;

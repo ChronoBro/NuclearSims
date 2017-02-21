@@ -14,7 +14,7 @@ class plane
   ~plane();
   int setPlaneCoordinates(double * normX0, double * normY0);
   //void setBoundary(double * p10, double * p20, double * p30, double * p40);
-  void findNormal(double *p10, double *p20, double * p30, double *p40);
+  void findNormal(double *p10, double *p20, double * p30);
   double * labCoordinate(double xprime, double yprime); //give it plane coordinates
   void setPlaneCenter(double * p0);
   void setNormal(double * n0);
