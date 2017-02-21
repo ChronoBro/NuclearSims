@@ -9,7 +9,7 @@
  \param CsI_res0 fractional energy resolution of this fragment in CsI
  \param thickness is target thickness in mg/cm2 
 */
-
+using namespace std;
 
 detector::detector(float dist0, float thickness0, int coordinate0)
 {
@@ -19,6 +19,9 @@ detector::detector(float dist0, float thickness0, int coordinate0)
   yD = 0;
   zD = dist0;
   didSetGeo=0;
+  double p0[3] = {xD,yD,zD};
+  detPlane.setPlaneCenter(p0);
+
 }
 
 detector::detector(float x0, float y0, float z0, float thickness0, int coordinate0)
@@ -29,6 +32,8 @@ detector::detector(float x0, float y0, float z0, float thickness0, int coordinat
   thickness = thickness0;
   coordinate = coordinate0;
   didSetGeo=0;
+  double p0[3] = {xD,yD,zD};
+  detPlane.setPlaneCenter(p0);
 }
 
 int detector::setGeometry(int nRing, int Npie, float rmin, float rmax)
@@ -47,6 +52,34 @@ int detector::setGeometry(int nRing, int Npie, float rmin, float rmax)
   
   return 1;
 }
+
+int detector::setDetNormal(double * n)
+{
+  detPlane.setNormal(n);
+
+  if(thickness > 0)
+    {
+
+      double p[3] = {xD,yD,zD};
+      //adds thickness to plane center
+      for(int i=0;i<3;i++)
+	{
+	  p[i] += + n[i]*-1.*thickness;
+	}
+      
+      detBPlane.setNormal(n);
+      detBPlane.setPlaneCenter(p);
+    }
+
+  return 1;
+}
+
+double * detector::labCoordinates()
+{
+  return detPlane.labCoordinate(xHit,yHit);
+}
+
+
 
 int detector::setGeometryFront(int nRing, int Npie, float rmin, float rmax)
 {

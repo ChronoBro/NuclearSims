@@ -52,11 +52,11 @@ int main()
   S4.setGeometry(128,128,7.5,62.5,0,0,0); //zeros at end signify it is a ring
 
   detector CsI1(zdist+5.,39.,0);
-  CsI1.setGeometry(1,8,35,62.5,0,0,0);
+  CsI1.setGeometry(1,16,35,62.5,0,0,0);
   //CsI1.setGeometryBack(1,8,42,62.5);
 
   detector CsI2(zdist+5.,39.,0.);
-  CsI2.setGeometry(1,4,7.5,35,0,0,0);
+  CsI2.setGeometry(1,8,7.5,35,0,0,0);
   //CsI2.setGeometryBack(1,4,7.5,42);
   
   CDecay decay(&frag1,&frag2,&frag3,einstein);
@@ -122,7 +122,7 @@ int main()
   float mean =0.;
   float sig = 0.;
 
-  double decayconstant =15; //in ns
+  double decayconstant =0.1; //in ns
   float lifetime = 0;
 
   int Ndet = 0;

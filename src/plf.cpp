@@ -15,7 +15,7 @@ CPlf::CPlf(float thickness)
   temp2 = 1.4*pi/180.;
   frame = new CFrame(8.);
   float thick = thickness/1000./9.*6.02e23; // atoms/ cem2
-  multScat =  new CMultScat(6,4,thick);
+  multScat =  new CMultScat(18,4,thick);
 
   p[0] = 0.;
   p[1] = 0.;

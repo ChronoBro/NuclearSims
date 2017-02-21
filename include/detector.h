@@ -5,8 +5,9 @@
 #include "ring.h"
 #include "ttt.h"
 #include "random.h"
+#include "plane.h"
 
-using namespace std;
+
 
 struct location
 {
@@ -20,21 +21,19 @@ struct location
   
   double bx,by,bz;
   double br,bthetaMin,bphiMin, bthetaMax, bphiMax;
-  double bdtheta, bdphi;
-
-  double p1[3];
-  double p2[3];
-  double p3[3];
-  double p4[3];
-
-
+  double bdtheta, bdphi;  
   
 };
+
+//create something that holds the PLANE COORDINATE dimensions(2D) of the setup
+//make a Cartesian and Polar Coordinate possible setup
+//Overload the shit out of the setGeometry functions (for Cartesiand and Polar Coordinates respectively)
 
 class detector
 {
  public:
 
+  
   detector(float, float,int); //distance to target along z-axis, thickness
   detector(float,float,float,float,int); //same as above but with x,y,z in lab frame specified (will add functionality later)
   ~detector();
@@ -49,6 +48,8 @@ class detector
   int setGeometryBack(int,int,float,float);
   int setGeometryFront(int,int,float,float,float,float,int);
   int setGeometryBack(int,int,float,float,float,float,int);
+  int setDetNormal(double*);
+  double * labCoordinates();
   
   int Nx;
   int Ny;
@@ -57,6 +58,11 @@ class detector
   int segmentXhit;
   int segmentYhit;
   int didSetGeo;
+  float xHit; //make these store the x,y coordinates ON THE PLANE of the segment hit
+  float yHit;
+  
+  plane detPlane;
+  plane detBPlane;
   
  private:
 
@@ -72,6 +78,7 @@ class detector
   float phi;
   location ** Location;
   float dr;
+
   
 };
 

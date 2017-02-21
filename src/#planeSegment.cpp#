@@ -13,11 +13,9 @@ planeSegment::planeSegment(const plane &plane0, int nBP)
   for(int i=0;i<NBP;i++)
     {
       boundaryPoints[i] = new double[3];
-
     }
   
 }
-
 
 
 

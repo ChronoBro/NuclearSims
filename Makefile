@@ -3,7 +3,7 @@ INCDIR = ./include
 OBJDIR = objs/
 SIMDIR = sims/
 
-OBJECTS := objs/detector.o objs/plf.o objs/frag.o objs/tele.o objs/array.o objs/sle.o objs/decay.o objs/loss.o objs/mScat.o objs/fragment.o objs/random.o objs/tower.o objs/frame.o objs/MomDist.o objs/moscow.o objs/ring.o objs/ttt.o objs/plane_det.o
+OBJECTS :=  objs/planeSegment.o objs/plane.o objs/detector.o objs/plf.o objs/frag.o objs/tele.o objs/array.o objs/sle.o objs/decay.o objs/loss.o objs/mScat.o objs/fragment.o objs/random.o objs/tower.o objs/frame.o objs/MomDist.o objs/moscow.o objs/ring.o objs/ttt.o objs/plane_det.o
 
 #ALLOBJECTS = $(wildcard $(SRCDIR)*.cpp)
 
