@@ -119,6 +119,12 @@ void plane::checkSet()
   
 }
 
+void plane::moveCenter(double x0, double y0, double z0)
+{
+  p[0]=x0;
+  p[1]=y0;
+  p[2]=z0;
+}
 
 plane::~plane()
 {

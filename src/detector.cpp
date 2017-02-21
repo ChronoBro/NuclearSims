@@ -15,24 +15,25 @@ detector::detector(float dist0, float thickness0, int coordinate0)
 {
   thickness = thickness0;
   coordinate = coordinate0; //0 to use spherical coordinates, 1 to use cartesian
-  xD = 0;
-  yD = 0;
-  zD = dist0;
   didSetGeo=0;
-  double p0[3] = {xD,yD,zD};
+  xD = 0.;
+  yD=0.;
+  zD=dist0;
+  double p0[3] = {0,0,dist0};
   detPlane.setPlaneCenter(p0);
 
 }
 
 detector::detector(float x0, float y0, float z0, float thickness0, int coordinate0)
 {
-  xD=x0;
-  yD=y0;
-  zD=z0;
   thickness = thickness0;
   coordinate = coordinate0;
   didSetGeo=0;
-  double p0[3] = {xD,yD,zD};
+  xD = x0;
+  yD = y0;
+  zD = z0;
+
+  double p0[3] = {x0,y0,z0};
   detPlane.setPlaneCenter(p0);
 }
 
@@ -67,11 +68,11 @@ int detector::setDetNormal(double * n)
   if(thickness > 0)
     {
 
-      double p[3] = {xD,yD,zD};
+      double p[3]={xD,yD,zD};
       //adds thickness to plane center
       for(int i=0;i<3;i++)
 	{
-	  p[i] += + n[i]*-1.*thickness;
+	  p[i] += n[i]*-1.*thickness;
 	}
       
       detBPlane.setNormal(n);
@@ -86,7 +87,14 @@ double * detector::labCoordinates()
   return detPlane.labCoordinate(xHit,yHit);
 }
 
-
+void detector::moveCenter(double x0, double y0, double z0)
+{
+  detPlane.moveCenter(x0,y0,z0);
+  if(thickness > 0)
+    {
+      detBPlane.moveCenter(x0,y0,z0);
+    }
+}
 
 int detector::setGeometryFront(int nRing, int Npie, float rmin, float rmax)
 {

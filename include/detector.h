@@ -51,6 +51,8 @@ class detector
   int setDetNormal(double*);
   int findDetNormal(double * &p1, double * &p2, double * &p3);
   double * labCoordinates();
+  void moveCenter(double, double, double);
+
   
   int Nx;
   int Ny;
@@ -71,15 +73,15 @@ class detector
   int coordinate = 0;
   //int is_hit;
   //float dist;
-  float xD;
-  float yD;
-  float zD;
   float thickness;
   float theta;
   float phi;
   location ** Location;
   float dr;
-
+  float xD;
+  float yD;
+  float zD;
+  
   
 };
 

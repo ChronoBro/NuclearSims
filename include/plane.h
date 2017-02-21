@@ -18,6 +18,7 @@ class plane
   double * labCoordinate(double xprime, double yprime); //give it plane coordinates
   void setPlaneCenter(double * p0);
   void setNormal(double * n0);
+  void moveCenter(double, double, double);
   
  private:
 
