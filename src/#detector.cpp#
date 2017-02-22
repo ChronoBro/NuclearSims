@@ -247,6 +247,8 @@ int detector::event(float theta0, float phi0, int coordinate0) //assumes particl
 	{
 	  for(int iy=0; iy < Ny; iy++)
 	    {
+
+
 	      if(theta0 > Location[ix][iy].fthetaMin && theta0 < Location[ix][iy].fthetaMax)
 		{
 		  if(theta0 > Location[ix][iy].bthetaMin && theta0 < Location[ix][iy].bthetaMax)
@@ -266,6 +268,8 @@ int detector::event(float theta0, float phi0, int coordinate0) //assumes particl
 			}
 		    }
 		}
+
+	      
 	    }
 	}
     }

@@ -4,7 +4,7 @@ using namespace std;
 
 plane::plane()
 {
-  printf("%s\n", "you may now use plane functions but remember to set plane normal and center");
+  //printf("%s\n", "you may now use plane functions but remember to set plane normal and center");
   didSet = 0;
 }
 

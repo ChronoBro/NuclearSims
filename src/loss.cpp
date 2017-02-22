@@ -10,19 +10,22 @@ using namespace std;
 \param mass0 is mass of particle in amu
 */
 
-CLoss::CLoss(string filename, float mass0)
+CLoss::CLoss()
 {
-  mass = mass0;
+}
+
+int CLoss::setParameters(string &filename)
+{
   ifstream File(filename.c_str());
   if (File.is_open() != 1)
     {
       cout << " could not open loss file " << filename;
-      return;
+      return 0;
     }
 
   char line[80];
   File.getline(line,80);
-  cout << line << endl;
+  //cout << line << endl;
 
   File >> N;
   Ein = new float [N];
@@ -33,6 +36,38 @@ CLoss::CLoss(string filename, float mass0)
      File >> Ein[i] >> dedx[i];
      //cout << Ein[i] << " " << dedx[i] << endl;
     }
+
+  return 1;
+}
+
+CLoss::CLoss(string filename, float mass0)
+{
+  mass = mass0;
+  // ifstream File(filename.c_str());
+  // if (File.is_open() != 1)
+  //   {
+  //     cout << " could not open loss file " << filename;
+  //     return;
+  //   }
+
+  // char line[80];
+  // File.getline(line,80);
+  // //cout << line << endl;
+
+  // File >> N;
+  // Ein = new float [N];
+  // dedx = new float [N];
+
+  // for (int i=0;i<N;i++) 
+  //   {
+  //    File >> Ein[i] >> dedx[i];
+  //    //cout << Ein[i] << " " << dedx[i] << endl;
+  //   }
+  if(!setParameters(filename))
+    {
+      cout << "error with loss table" << endl;
+    }
+  
 }
 
 //****************************************************************
@@ -89,11 +124,48 @@ float CLoss::getEout(float energy, float thick)
      float thickness = min(thick,dthick);
      de = getDedx(Eout);
      Eout -= de*thickness;
-     if (thickness == thick) break;
+     if (thickness == thick)
+       {
+	 break;
+       }
      thick -= dthick;
+     if(Eout < 0)
+       {
+	 Eout = 0.;
+	 break;
+       }
    }
    return Eout;
 }
+
+float CLoss::getEout(float energy, float thick, float mass0)
+{
+  mass = mass0;
+  float dthick = 1.;
+  float de;
+  float Eout= energy;
+   for(;;)
+   {
+     float thickness = min(thick,dthick);
+     de = getDedx(Eout);
+     Eout -= de*thickness;
+     if (thickness == thick)
+       {
+	 break;
+       }
+     thick -= dthick;
+     if(Eout < 0)
+       {
+	 Eout = 0.;
+	 break;
+       }
+   }
+   return Eout;
+}
+
+
+
+
 //********************************************************************
   /**
    * Determined the inital energy of a particle before entering an 
@@ -112,7 +184,10 @@ float CLoss::getEin(float energy, float thick)
      float thickness = min(thick,dthick);
      de = getDedx(Einput);
      Einput += de*thickness;
-     if (thickness == thick) break;
+     if (thickness == thick)
+       {
+	 break;
+       }
      thick -= dthick;
    }
    return Einput;

@@ -1,0 +1,27 @@
+#ifndef _material
+#define _material
+
+
+#include "math.h"
+#include <iostream>
+#include "loss.h"
+
+
+
+class material
+{
+ public:
+
+ material();
+ material( double density, double Z0, double A0);
+  ~material();
+    
+
+
+ private:
+
+
+
+};
+  
+#endif

@@ -2,7 +2,6 @@
 #include <fstream>
 #include <iostream>
 
-using namespace std;
 
 /**
  * !\brief energy loss of particles in an absorber
@@ -16,10 +15,14 @@ class CLoss
   float *dedx;
   float mass;
 
-  CLoss(string,float);
+  
+  CLoss();
+  CLoss(std::string,float);
   ~CLoss();
-
+  int setParameters(std::string &);
+  
     float getEout(float,float);
+    float getEout(float,float,float);
     float getEin(float,float);
     float getDedx(float);
 };

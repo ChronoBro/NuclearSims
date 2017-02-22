@@ -1,0 +1,11 @@
+#include "material.h"
+
+using namespace std;
+
+
+
+
+~material()
+{
+
+}
