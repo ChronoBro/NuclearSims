@@ -22,7 +22,7 @@ CFrag::CFrag(float Z0,float mass0, string filename, float CsI_res0,
   //CsI_res = 0;
   //be9 target  
   float thick = thickness/1000./9.*6.02e23; // atoms/ cem2
-  multScat = new CMultScat((int)Z,4,thick);
+  multScat = new CMultScat((int)Z,4);
 
   float fromCenter = 37.2;//35.;
   float radius = 63.; //50.;
@@ -162,6 +162,26 @@ int CFrag::hit3(float xtarget,float ytarget, float zbreakup, float straggle)
   
 int CFrag::hit4(float xtarget,float ytarget, float zbreakup)
 {
+
+  rho = (Ring->dist - zbreakup)/cos(real->theta);
+  rho_CsI = (RingCsI->dist - zbreakup)/cos(real->theta);
+
+  ran_strag = 0.;//ran.Gaus(0.,1.)*straggle;
+  ran_phi = 2*3.14159*ran.Rndm();
+
+  x = rho*sin(real->theta)*cos(real->phi) + xtarget;
+  x_CsI = rho_CsI*sin(real->theta)*cos(real->phi) + xtarget + ran_strag*cos(ran_phi);
+
+  y = rho*sin(real->theta)*sin(real->phi) + ytarget;
+  y_CsI = rho_CsI*sin(real->theta)*sin(real->phi) + ytarget + ran_strag*sin(ran_phi);
+
+  theta_prime = atan2(sqrt(pow(x,2.) + pow(y,2.)),Ring->dist);
+  phi_prime = atan2(y,x);// + acos(-1);
+
+  theta_prime_CsI = atan2(sqrt(pow(x_CsI,2.) + pow(y_CsI,2.)),410+39*cos(real->theta));
+  phi_prime_CsI = atan2(y_CsI,x_CsI);// + acos(-1);
+
+
   is_hit = Plane->hit(real->theta,real->phi,xtarget,ytarget,zbreakup) ;
 
   if (is_hit) 
@@ -756,9 +776,9 @@ void CFrag::setPosition(float * p0)
 
 void CFrag::propagate(double tau)
 {
-  p[0] = real->v[0]*tau + p[0];
-  p[1] = real->v[1]*tau + p[1];
-  p[2] = real->v[2]*tau + p[2];
+  p[0] = real->v[0]*tau*10. + p[0]; //velocities are in cm/ns
+  p[1] = real->v[1]*tau*10. + p[1];
+  p[2] = real->v[2]*tau*10. + p[2];
 
   
 }

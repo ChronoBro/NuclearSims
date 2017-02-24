@@ -15,7 +15,7 @@ CPlf::CPlf(float thickness)
   temp2 = 1.4*pi/180.;
   frame = new CFrame(8.);
   float thick = thickness/1000./9.*6.02e23; // atoms/ cem2
-  multScat =  new CMultScat(18,4,thick);
+  multScat =  new CMultScat(20,4);
 
   p[0] = 0.;
   p[1] = 0.;
@@ -98,7 +98,7 @@ void CPlf::GetPlf()
 
 }
 
-void CPlf::GetPlf(float EPA0, int mass)
+void CPlf::GetPlf(float EPA0, int mass, int dontChange)
 {
   // float vv;
   // if (ran.Rndm()>0.2) vv = ran.Gaus(11.01,.2);
@@ -136,11 +136,19 @@ void CPlf::GetPlf(float EPA0, int mass)
   float pmag;
 
   //CMomDist momDist;
-  
-  ptr = 0.; //momDist.getTransMom(); could make these gaussian or something
-  pz = 0.; //momDist.getLongMom();
 
-  pbeam = sqrt(pow((EPA0+931.478)*mass,2)-pow(931.478*mass,2));
+  if(!dontChange)
+    {
+      ptr = momDist.getTransMom(); //could make these gaussian or something
+      pz = momDist.getLongMom();
+    }
+  else
+    {
+      ptr=0;
+      pz=0;
+    }
+  
+  pbeam = sqrt(pow((EPA0+931.478)*mass,2)-pow(931.478*(float)mass,2));
   
   float theta = 0.;
   theta = atan2(ptr, pz + pbeam);
@@ -153,15 +161,28 @@ void CPlf::GetPlf(float EPA0, int mass)
   vv = 30.*vv;
   
   float v[3];
-  v[0] = vv*sin(theta)*cos(phi);
-  v[1] = vv*sin(theta)*sin(phi);
-  v[2] = vv*cos(theta);
+ 
+  if(!dontChange)
+    {
+      v[0] = vv*sin(theta)*cos(phi);
+      v[1] = vv*sin(theta)*sin(phi);
+      v[2] = vv*cos(theta);
+      for (int i=0;i<3;i++)frame->v[i] = v[i];
+    }
+  else
+    {
+       for (int i=0;i<3;i++)frame->v[i] = frame->v[i]*vv/frame->velocity;
+    }
   
-  for (int i=0;i<3;i++)frame->v[i] = v[i];
   frame->velocity = vv;
-  frame->theta = theta;
-  frame->phi = phi;
 
+  if(!dontChange)
+    {
+      frame->theta = theta;
+      frame->phi = phi;
+    }
+  //cout << "pbeam = " << pbeam << endl;
+  
 }
 
 
@@ -263,17 +284,23 @@ void CPlf::MultiScat(float fractionalThick)
 
 void CPlf::propagate(double tau)
 {
-  p[0] = tau*v[0] + p[0];
-  p[1] = tau*v[1] + p[1];
-  p[2] = tau*v[2] + p[2];
+  p[0] = tau*v[0]*10. + p[0]; //velocities are in cm/ns
+  p[1] = tau*v[1]*10. + p[1];
+  p[2] = tau*v[2]*10. + p[2];
 
 }
 
 void CPlf::setBeamSpot(double targetSize)
 {
-  p[0] = (1.-2.*ran.Rndm())/2.*targetSize;
-  p[1] = (1.-2.*ran.Rndm())/2.*targetSize;
 
+  do
+    {
+      p[0] = (1.-2.*ran.Rndm())/2.*targetSize;
+      p[1] = (1.-2.*ran.Rndm())/2.*targetSize;
+    } while( sqrt(pow(p[0],2)+pow(p[1],2)) > targetSize/2.);
+  
+  
+  
 }
 
 void CPlf::setLifetime(double decayConstant)

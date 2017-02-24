@@ -15,7 +15,8 @@ class CMultScat
  public:
  
   float a; //!<screening parameter in fermi's
-  float totalThick; //!<target thickness in mg/cm2
+  float thick; //!<target thickness in mg/cm2
+  float totalThick;
   float totalTau;
   float factor;
   static float const a0;
@@ -24,7 +25,7 @@ class CMultScat
   int Zpro;  //!< atomic number of projectile
   int Ztar;  //!< atomic number of target
 
-  CMultScat(int,int,float); 
+  CMultScat(int,int); 
   float thetaRMS(float,float);
 };
 

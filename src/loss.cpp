@@ -98,6 +98,20 @@ float CLoss::getDedx(float energy)
 	{
           if (epa < Ein[istart]) break;
 	  istart++;
+	  if(epa!=epa)
+	    {
+	      cout << endl << "NaN error in getDedx!" << endl;
+	      cout << "Will fix this one day..." << endl;
+	      abort();
+	    }
+	  else if(istart == N)
+	    {
+	      cout << endl <<  "Need to increase range of loss files buddy!" << endl;
+	      cout << "EPA = " << epa << endl;
+	      cout << "for mass = " << mass << endl;
+	      abort();
+	    }
+
 	}
       istart--;
     }
@@ -147,6 +161,11 @@ float CLoss::getEout(float energy, float thick, float mass0)
    for(;;)
    {
      float thickness = min(thick,dthick);
+     if(Eout < 0)
+       {
+	 Eout = 0.;
+	 break;
+       }
      de = getDedx(Eout);
      Eout -= de*thickness;
      if (thickness == thick)
@@ -154,11 +173,6 @@ float CLoss::getEout(float energy, float thick, float mass0)
 	 break;
        }
      thick -= dthick;
-     if(Eout < 0)
-       {
-	 Eout = 0.;
-	 break;
-       }
    }
    return Eout;
 }

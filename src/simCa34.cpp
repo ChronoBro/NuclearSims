@@ -7,7 +7,7 @@
 #include "frag.h"
 #include "decay.h"
 #include "TRandom.h"
-//#include "CMomDist.h"
+
 
 
 using namespace std;
@@ -24,8 +24,13 @@ int main()
 
   string Loss1("../loss/Hydrogen.loss");
   string Loss2("../loss/Hydrogen.loss");
-  string Loss3("../loss/Argon.loss");
+  string Loss3("../loss/Be/Argon.loss");
+  string Loss4("../loss/Be/Calcium.loss");
+
   
+  float EPA = 100.;
+  int plfMass = 35;
+  float density = 1848.; //mg/cm^3 of berrylium
   
   int const Nevents = 50000;
   //int const Nevents =  1000;
@@ -33,30 +38,29 @@ int main()
   //float thickness = 188; //mg/cm2
   //float thickness = 94;
   float thickness = 396;
+  //float thickness = 0.0001;  
   float const targetSize = 10.;
   float Csi_Res = .1275;
   //float straggle = 1.01;
   float straggle = 0.;
   //float CsiRes = .113;
 
-
-
   CPlf plf(thickness);
   CFrag frag1(1.,1.,Loss1,Csi_Res,thickness);
   CFrag frag2(1.,1.,Loss2,Csi_Res,thickness);
   CFrag frag3(18.,32.,Loss3,Csi_Res,thickness);
 
-  float zdist=405.;
+  float zdist=400.;
 
   detector S4(zdist,0,0); //distance from target along z-axis and thickness (if thickness=0 it speeds things up), and coordinate(not functioning now
   S4.setGeometry(128,128,7.5,62.5,0,0,0); //zeros at end signify it is a ring
 
   detector CsI1(zdist+5.,39.,0);
-  CsI1.setGeometry(1,16,35,62.5,0,0,0);
+  CsI1.setGeometry(1,16,30.5,75,0,0,0);
   //CsI1.setGeometryBack(1,8,42,62.5);
 
   detector CsI2(zdist+5.,39.,0.);
-  CsI2.setGeometry(1,8,7.5,35,0,0,0);
+  CsI2.setGeometry(1,8,7.5,30,0,0,0);
   //CsI2.setGeometryBack(1,4,7.5,42);
   
   CDecay decay(&frag1,&frag2,&frag3,einstein);
@@ -98,6 +102,7 @@ int main()
   TH1I hist_aRatio("aRatio","",200,0,1);
 
   TH1S hist_Erel("Erel","Erel",100,0.,10.);
+  TH1S Erel_noT("Erel_noT","Erel_noT",100,0.,10.);
   TH1S hist_ppRel("ppRel","",500,-3,10);
   TH2S map_Erel_dthick("Erel_dthick","Erel_dthick",200,1.5,4.5,100,0,1000);
   TH2S map_Erel6Be_dthick("Erel6Be_dthick","Erel6Be_dthick",200,-1.,1.,100,0,1000);
@@ -116,13 +121,15 @@ int main()
   TH1I hist_momDisttr("momDisttr","",100,-400,400);
   TH1I hist_momDistz("momDistz","",100,-400,400);
 
+  TH1F ArEdist("ArEdist","",500,0,100);
+  
   TRandom lifetime_distribution(0);
 
 
   float mean =0.;
   float sig = 0.;
 
-  double decayconstant =0.1; //in ns
+  double decayconstant =2.0; //in ns
   float lifetime = 0;
 
   int Ndet = 0;
@@ -138,44 +145,115 @@ int main()
   float xTarget = 0.;
   float yTarget = 0.;
   float zBreakup = 0.;
+
+  CLoss CaInBe(Loss4,35);
+  CLoss ArInBe(Loss3,32);
+  float ECa = EPA*35;
+
+  
   for (int i=0;i<Nevents;i++)
     {
 
+      float EPA0=0;
+      EPA0=EPA;
+
+      
       if (i%1000 == 0) cout << '\xd' <<  i << flush;
       dthick = thickness*plf.ran.Rndm();
+      plf.GetPlf(EPA0,35,1);
+      double EoutCa = CaInBe.getEout(ECa,dthick);
+
+      EPA0 = EoutCa/(float)35;
+      plf.MultiScat(dthick);
+      //cout << "EPA of 35Ca = " << EPA0 << endl;
+
       xTarget = (1.-2.*plf.ran.Rndm())/2.*targetSize;
       yTarget = (1.-2.*plf.ran.Rndm())/2.*targetSize;
-
-      plf.GetPlf();
       plf.setBeamSpot(targetSize);
-      //multiple scattering of plf
-      if (thickness > 0.)  plf.MultiScat(1.-dthick/thickness);
+      
+      plf.GetPlf(EPA0,34,0);
 
+      lifetime = (float)lifetime_distribution.Exp(plf.frame->gamma*decayconstant);
+      xTarget = xTarget + plf.frame->v[0]*lifetime*10.; //multiplied by 10 to put in mm
+      yTarget = yTarget + plf.frame->v[1]*lifetime*10.;
+      zBreakup = lifetime*plf.frame->v[2]*10. + dthick/density*10.;
+
+
+
+      //plf.GetPlf();
+
+
+
+ 
+      double EoutCa2;
+     
+
+ 
+
+      //now break up plf
+      //plf.isotropic();
+      //decay.ModeMoscow(); //sequential micro+P26Be
+
+      
+      if(zBreakup < thickness/density*10.)
+	{
+	  EoutCa2 = CaInBe.getEout(EPA0*34,zBreakup/10.*density-dthick);
+	  plf.GetPlf(EoutCa2/34,34,1);	  
+	  plf.MultiScat(zBreakup/10.*density-dthick);
+	  plf.setLifetime(decayconstant);
+	  
+	  plf.frame->getVelocity();
+
+	  decay.ModeMicroCanonical();
+
+	  frag1.AddVelocity(plf.frame->v);
+	  frag2.AddVelocity(plf.frame->v);
+	  frag3.AddVelocity(plf.frame->v);
+
+	  frag3.MultiScat(thickness-zBreakup/10.*density);
+	  frag2.MultiScat(thickness-zBreakup/10.*density);
+	  frag1.MultiScat(thickness-zBreakup/10.*density);
+	  //cout << "original frag3 energy = " << frag3.real->energy << endl
+	  frag3.Eloss(thickness-zBreakup/10.*density);
+	  frag2.Eloss(thickness-zBreakup/10.*density);
+	  frag1.Eloss(thickness-zBreakup/10.*density);
+	}
+      else
+	{
+	  EoutCa2 = CaInBe.getEout(EPA0*34,thickness-dthick);
+	  plf.GetPlf(EoutCa2/34,34,1);	  
+	  plf.MultiScat(thickness-dthick);
+	  plf.setLifetime(decayconstant);
+	  plf.frame->getVelocity();
+	  decay.ModeMicroCanonical();
+
+	  frag1.AddVelocity(plf.frame->v); //need to transform these right after decay so that the energies in the LAB frame are correct
+	  frag2.AddVelocity(plf.frame->v);
+	  frag3.AddVelocity(plf.frame->v);
+	  
+	}
+
+      EPA0 = EoutCa2/(float)34;
+      //cout << "EPA of 34Ca = " << EPA0 << endl;
+
+
+      
       hist_vel.Fill(plf.frame->velocity);
       hist_theta.Fill(plf.frame->theta*180./plf.pi);
       hist_phi.Fill(plf.frame->phi*180./plf.pi);
-
-      plf.frame->getVelocity();
+      ArEdist.Fill(frag3.real->energy/32.);      
       
-      lifetime = (float)lifetime_distribution.Exp(plf.frame->gamma*decayconstant);
-      //lifetime = 0.;
+      //cout << "thickness in mg/cm2 = " << thickness << endl;
+      //cout << "Zbreakup in mg/cm2 = " << zBreakup/10.*density << endl;
+      //cout << "frag3 energy = " << frag3.real->energy << endl;
+      //EPA0 = frag3.real->energy/32.;
+      
+     
+      
+      //multiple scattering of plf
+      //if (thickness > 0.)  plf.MultiScat(thickness-dthick);
 
       
-      
-      xTarget = xTarget + plf.frame->v[0]*lifetime*10.; //divided by 10 to put in mm
-      yTarget = yTarget + plf.frame->v[1]*lifetime*10.;
-      zBreakup = lifetime*plf.frame->v[2]*10.;
-
-      plf.setLifetime(decayconstant);
-      
-      //ofile << lifetime << " " << zBreakup << endl;
-
-      //now break up plf
-      plf.isotropic();
-
-      //decay.ModeMoscow(); //sequential micro+P26Be
-      decay.ModeMicroCanonical();
-
 
       JacobiT_x_p.Fill(decay.x_T);
       JacobiT_y_p.Fill(decay.CosTheta_T);
@@ -186,20 +264,15 @@ int main()
       JacobiY_y_p.Fill(-decay.CosTheta_Y[0]);
       JacobiY_y_p.Fill(-decay.CosTheta_Y[1]);
 
-
-      frag1.AddVelocity(plf.frame->v);
-      frag2.AddVelocity(plf.frame->v);
-      frag3.AddVelocity(plf.frame->v);
-
       frag1.setPosition(plf.p);
       frag2.setPosition(plf.p);
       frag3.setPosition(plf.p);
 
 
       //interaction in target, continue if stopped
-      if (frag1.targetInteraction(dthick,thickness)) continue;
-      if (frag2.targetInteraction(dthick,thickness)) continue;
-      if (frag3.targetInteraction(dthick,thickness)) continue;
+      //if (frag1.targetInteraction(dthick,thickness)) continue;
+      //if (frag2.targetInteraction(dthick,thickness)) continue;
+      //if (frag3.targetInteraction(dthick,thickness)) continue;
 
       // cout << endl<< "original frag1 theta = " << frag1.real->theta << endl;
       // cout << "original frag2 theta = " << frag2.real->theta << endl;
@@ -209,15 +282,22 @@ int main()
       int nhit = frag1.hit3(xTarget, yTarget, zBreakup, straggle) + frag2.hit3(xTarget, yTarget, zBreakup,straggle);
       nhit += frag3.hit4(xTarget, yTarget, zBreakup);
 
+      int check2;
+      int check1;
+      
       int nhit1 = S4.event(frag1.theta_prime, frag1.phi_prime,0);//(frag1.real->theta, frag1.real->phi,0);
       frag1.recon->theta = S4.thetaHit;
       frag1.recon->phi = S4.phiHit;
-
+      check1 = S4.segmentXhit;
+      
       
       int nhit2 = S4.event(frag2.theta_prime, frag2.phi_prime,0);
       frag2.recon->theta = S4.thetaHit;
       frag2.recon->phi = S4.phiHit;
+      check2 = S4.segmentXhit;
 
+      
+      
       if(nhit1)
       	{
       	  frag1.recon->energy = frag1.real->energy  + sqrt(frag1.real->energy)*frag1.CsI_res*
@@ -239,25 +319,26 @@ int main()
       
       
       //if(frag3.real->theta > frag1.Ring->theta_min)
-      if(frag3.hit3(xTarget, yTarget, zBreakup, 0)==1)
-      {
-	nhit -=1;
-      }
-      else if(frag3.hit5(xTarget, yTarget, zBreakup)==1)
-      {
-	nguardring++;
-	nhit-=1;
-      }	
-      else if(frag1.real->energy > 87.0)
-	{
-	  highenergyprotons++;
-	  nhit-=1;
-	}
-      else if(frag2.real->energy > 87.0)
-	{
-	  highenergyprotons++;
-	  nhit-=1;
-	}
+      // if(frag3.hit3(xTarget, yTarget, zBreakup, 0)==1)
+      // {
+      // 	nhit -=1;
+      // }
+      // else if(frag3.hit5(xTarget, yTarget, zBreakup)==1)
+      // {
+      // 	nguardring++;
+      // 	nhit-=1;
+      // }	
+      // else if(frag1.real->energy > 87.0)
+      // 	{
+      // 	  highenergyprotons++;
+      // 	  nhit-=1;
+      // 	}
+      // else if(frag2.real->energy > 87.0)
+      // 	{
+      // 	  highenergyprotons++;
+      // 	  nhit-=1;
+      // 	}
+
       if (nhit != 3 || zdist < zBreakup)
 	{
 	  continue;
@@ -269,9 +350,20 @@ int main()
       keProton.Fill(frag2.real->energy);
       keProton.Fill(frag3.real->energy);
 
+      if(check1==check2)
+	{
+	  continue;
+	}
+
+      
       int checkSeg1;
       int checkSeg2;
-
+      
+      //cout << "frag1.theta_prime = " << frag1.theta_prime << endl;
+      //cout << "frag2.theta_prime = " << frag2.theta_prime << endl;      
+      //cout << "frag3.theta_prime = " << frag3.theta_prime << endl;
+      
+      
       if( frag3.theta_prime > atan2(6.5,zdist) ) //to make sure the residue goes down the hole
 	{
 	  continue;
@@ -321,17 +413,20 @@ int main()
       NdetClean++;
 
       //correct for energy loss in half of target and get velocity
+
+      float ErelR = decay.getErelRecon();
+      Erel_noT.Fill(ErelR);
       
       frag1.Egain(thickness/2.);
       frag2.Egain(thickness/2.);
       frag3.Egain(thickness/2.);
 
-
-      float ErelR = decay.getErelRecon();
+      ErelR = decay.getErelRecon();
+      hist_Erel.Fill(ErelR);     
 
 
       //float ErelR = decay.getEk5();
-      hist_Erel.Fill(ErelR);
+
       hist_theta_R.Fill(decay.plfRecon->theta*180./3.1459);
       hist_vel_R.Fill(decay.plfRecon->velocity);
 
@@ -458,12 +553,14 @@ int main()
   hist_theta.Write();
   hist_phi.Write();
   hist_Erel.Write();
+  Erel_noT.Write();
   hist_theta_R.Write();
   hist_vel_R.Write();
 
 
   keAlpha.Write();
   keProton.Write();
+  ArEdist.Write();
   alpha_mom.Write();
   protonXY_s.Write();
   protonXY_s_1.Write();
@@ -498,6 +595,8 @@ int main()
   JacobiT_y_p.Write();
   JacobiY_x_p.Write();
   JacobiY_y_p.Write();
+
+
 
   //ofile.close();
 

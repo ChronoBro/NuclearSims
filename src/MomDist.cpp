@@ -12,11 +12,13 @@ int const CMomDist::n=221;
  */
 CMomDist::CMomDist()
 {
+  //cout << endl << "creating momentem distributions from MomDist" << endl;
+
   xArrayz = new float [n];
   yArrayz = new float [n];
   xArraytr = new float [n];
   yArraytr = new float [n];
-  ifstream ifFilez("zn02_allM.out");
+  ifstream ifFilez("../../MomDist/zn02_allM.out");
   if (ifFilez.fail()) 
     {
       cout << " could not open zn02_allM.out " << endl;
@@ -34,7 +36,7 @@ CMomDist::CMomDist()
   for (int i=0;i<n;i++) yArrayz[i] /= yArrayz[n-1];
   ifFilez.close();
 
-  ifstream ifFiletr("trn02_allM.out");
+  ifstream ifFiletr("../../MomDist/trn02_allM.out");
   if (ifFiletr.fail())
     {
       cout << " could not open trn02_allM.out " << endl;

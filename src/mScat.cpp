@@ -11,15 +11,15 @@ float const CMultScat::pi = 3.14159;
  \param totalThick0 is targts thickness in mg/cm2
  */
 
-CMultScat::CMultScat(int Zpro0, int Ztar0, float totalThick0)
+CMultScat::CMultScat(int Zpro0, int Ztar0)
 {
   Zpro = Zpro0;
   Ztar = Ztar0;
-  totalThick = totalThick0;  //atoms per centermeter sqaured
+  //totalThick = totalThick0;  //atoms per centermeter sqaured
 
   a = 0.885*a0/sqrt(pow((double)Zpro,2./3.)+pow((double)Ztar,2./3.));
 
-  totalTau = pi*pow(a,2)*totalThick;
+  //totalTau = pi*pow(a,2)*totalThick;
 
   factor = 16.26/(float)(Zpro*Ztar)/
     sqrt(pow((double)Zpro,2./3.)+pow((double)Ztar,2./3.))*1000.;
@@ -33,9 +33,10 @@ CMultScat::CMultScat(int Zpro0, int Ztar0, float totalThick0)
   \param is the fractional thickness of the target through which the particle traverses 
  */
 
-float CMultScat::thetaRMS(float energy, float fractionalThickness)
+float CMultScat::thetaRMS(float energy, float thick)
 {
-  float tau = fractionalThickness*totalTau;
+  //float tau = fractionalThickness*totalTau;
+  float tau = thick*pi*pow(a,2);
   float alphaBar = pow((double)tau,.55);
   //cout << "alphaBAr= " << alphaBar << " factor " << factor << endl;
   float alpha = alphaBar/energy/factor; //half width at half maximum in radians

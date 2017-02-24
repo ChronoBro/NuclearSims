@@ -29,14 +29,14 @@ class CPlf
   CPlf(float);
   ~CPlf();
   void GetPlf();
-  void GetPlf(float,int);
+  void GetPlf(float,int,int);
   void isotropic();
   void inplane();
   float temp1,temp2;
   static float const pi;
   static CRandom ran;
   CFrame *frame;
-  //CMomDist momDist;
+  CMomDist momDist;
   CMultScat *multScat;
   void MultiScat(float);
   void propagate(double);

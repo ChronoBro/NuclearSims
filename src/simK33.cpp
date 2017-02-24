@@ -140,7 +140,7 @@ int main()
       yTarget = (1.-2.*plf.ran.Rndm())/2.*targetSize;
 
    
-      plf.GetPlf(EPA0,plfMass);
+      plf.GetPlf(EPA0,plfMass,0);
       //multiple scattering of plf
       if (thickness > 0.)  plf.MultiScat(1.-dthick/thickness);
 
