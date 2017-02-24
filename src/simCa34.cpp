@@ -121,7 +121,7 @@ int main()
   TH1I hist_momDisttr("momDisttr","",100,-400,400);
   TH1I hist_momDistz("momDistz","",100,-400,400);
 
-  TH1F ArEdist("ArEdist","",500,0,100);
+  TH1F ArEdist("ArEdist","",1000,10000,12000);
   
   TRandom lifetime_distribution(0);
 
@@ -241,7 +241,9 @@ int main()
       hist_vel.Fill(plf.frame->velocity);
       hist_theta.Fill(plf.frame->theta*180./plf.pi);
       hist_phi.Fill(plf.frame->phi*180./plf.pi);
-      ArEdist.Fill(frag3.real->energy/32.);      
+      frag3.real->getVelocity();
+      //cout << frag3.real->pcTot << endl;
+      ArEdist.Fill(frag3.real->pcTot);      
       
       //cout << "thickness in mg/cm2 = " << thickness << endl;
       //cout << "Zbreakup in mg/cm2 = " << zBreakup/10.*density << endl;
