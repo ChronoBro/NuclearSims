@@ -7,7 +7,7 @@
 #include "frag.h"
 #include "decay.h"
 #include "TRandom.h"
-
+#include "MathGeoLib.h"
 
 
 using namespace std;
@@ -174,7 +174,6 @@ int main()
       plf.GetPlf(EPA0,34,0);
 
       lifetime = (float)lifetime_distribution.Exp(plf.frame->gamma*decayconstant);
-      //lifetime = 1E-3; //just for testing
       xTarget = xTarget + plf.frame->v[0]*lifetime*10.; //multiplied by 10 to put in mm
       yTarget = yTarget + plf.frame->v[1]*lifetime*10.;
       zBreakup = lifetime*plf.frame->v[2]*10. + dthick/density*10.;

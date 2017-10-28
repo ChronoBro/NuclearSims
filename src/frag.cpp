@@ -32,6 +32,7 @@ CFrag::CFrag(float Z0,float mass0, string filename, float CsI_res0,
   recon = new CFrame(mass);
 
   float dist = 405.;
+  ringDist = dist;
   //float dist = 370.;
   Ring = new ring(dist,7.5,62.5,128,128,0); //S4
   Inactive = new ring(dist,6.5,7.5,1,1,0);//S4 inactive area
@@ -40,7 +41,7 @@ CFrag::CFrag(float Z0,float mass0, string filename, float CsI_res0,
   //RingCsI1 = new ring(332.,7.5,62.5,128,128);
   //RingCsI = new ring(315.,7.5,62.5,128,128); // 0 thickness
 
-  Plane = new plane_det(345.,20.,20.,0.95);
+  Plane = new plane_det(345.,20.,20.,0.95); //originally used 0.95 mm resolution?
 
   p[0]=0.; //initialize particle at the origin
   p[1]=0.;
@@ -782,3 +783,91 @@ void CFrag::propagate(double tau)
 
   
 }
+
+
+void CFrag::setTrajectory(float x, float y, float z)
+{
+  for (int i=0;i<3;i++)
+    {
+      trajectory.dir[i] = real->v[i];
+    }
+
+  trajectory.dir.Normalize();
+  float3 center;
+  center[0]=x;
+  center[1]=y;
+  center[2]=z;
+  trajectory.pos = center;
+}
+
+void CFrag::setRecon()
+{
+  recon->theta = acos(trajectory.dir[2] );
+  recon->phi = atan2(trajectory.dir[1],trajectory.dir[0]);
+  recon->energy = real->energy;
+  recon->getVelocity();
+
+}
+
+void CFrag::setRecon(float d, float measuredD, float start) //d is the distance of the interaction fromt the target
+{
+  float time_res = 1.; //FWHM in ns
+  recon->theta = acos(trajectory.dir[2] );
+  recon->phi = atan2(trajectory.dir[1],trajectory.dir[0]);
+  //cout << "real-velocity = " << real->velocity << endl;;
+  //float timing = d/real->velocity;
+
+  float timing = RKEToTOF(real->energy,d) - start;
+  // cout << endl <<  timing << " ns" <<  endl;
+  // cout << d << " cm" << endl;
+  // cout << "real energy = " << real->energy << endl;
+  
+  timing = timing + ran.Gaus(0.,time_res/2.355); //converting FWHM to sigma
+  
+  recon->energy = tofToRKE(measuredD,timing);//0.5*pow(d/timing/0.9784,2);
+  // cout << timing << "ns" << endl;
+  // cout << measuredD << " cm " << endl; 			    
+  // cout << "recon energy = " << recon->energy << endl << endl;
+  recon->getVelocity();
+
+}
+
+// const double FLIGHT_DISTANCE = xxx // in cm
+// const double NEUTRON_MASS = xxx // in MeV
+// double TOF // in ns
+double CFrag::tofToRKE(double d, double TOF)
+{
+  double C = 30; //cm/ns
+  double velocity = d/TOF; // in meters/sec 
+
+  if (velocity>C)
+    {
+        return -1;
+    }
+
+    // convert velocity to relativistic kinetic energy
+    double RKE = (pow((1.-pow((velocity/C),2.)),-0.5)-1.)*939.565; // in MeV
+    if(RKE<0)
+    {
+        return -1;
+    }
+    return RKE;
+}
+
+
+double CFrag::RKEToTOF(float RKE, float d)
+{
+  double C =30;
+  // convert relativistic kinetic energy to velocity
+  double velocity = pow(1-pow((1/((RKE/939.565)+1)),2),0.5)*C;
+  
+  if(velocity<0 || velocity>C)
+    {
+      return -1;
+    }
+  
+  double TOF = d/velocity; // 
+  
+  return TOF; // in ns
+}
+

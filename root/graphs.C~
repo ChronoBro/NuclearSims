@@ -1,0 +1,133 @@
+#include "TH1.h"
+#include "TF1.h"
+#include "TCanvas.h"
+#include <fstream>
+#include <sstream>
+
+void graphs()
+{
+  //gROOT->SetStyle("Plain");
+  gStyle->SetOptStat(0);
+  // TStyle * Sty = (TStyle*)gROOT->FindObject("MyStyle");
+  // if(!Sty)
+  //   {
+  //     Sty = new TStyle("MyStyle","MyStyle");
+  //   }
+  // Sty->SetOptTitle(0);
+  // Sty->SetOptStat(0);
+  // Sty->SetPalette(1,0);
+  // Sty->SetCanvasColor(10);
+  // Sty->SetCanvasBorderMode(0);
+  // Sty->SetFrameLineWidth(3);
+  // Sty->SetFrameFillColor(10);
+  // Sty->SetPadColor(10);
+  // Sty->SetPadTickX(1);
+  // Sty->SetPadTickY(1);
+  // Sty->SetPadBottomMargin(.17);
+  // Sty->SetPadTopMargin(.03);
+  // Sty->SetPadLeftMargin(.17);
+  // Sty->SetPadRightMargin(.13);
+  // Sty->SetHistLineWidth(3);
+  // Sty->SetHistLineColor(kBlack);
+  // Sty->SetFuncWidth(3);
+  // Sty->SetFuncColor(kRed);
+  // Sty->SetLineWidth(3);
+  // Sty->SetLabelSize(0.06,"xyz");
+  // Sty->SetLabelOffset(0.02,"y");
+  // Sty->SetLabelOffset(0.02,"x");
+  // Sty->SetLabelColor(kBlack,"xyz");
+  // Sty->SetTitleSize(0.06,"xyz");
+  // Sty->SetTitleOffset(1.5,"y");
+  // Sty->SetTitleOffset(1.1,"x");
+  // Sty->SetTitleFillColor(10);
+  // Sty->SetTitleTextColor(kBlack);
+  // Sty->SetTickLength(.03,"xz");
+  // Sty->SetTickLength(.02,"y");
+  // Sty->SetNdivisions(10,"x");
+  // Sty->SetNdivisions(10,"yz");
+  // Sty->SetEndErrorSize(0);
+  // Sty->SetMarkerStyle(8);
+  // gROOT->SetStyle("MyStyle");
+  // gROOT->ForceStyle();
+
+  TFile * lifetime0001 = new TFile("lifetime0.001.root");
+  TFile * lifetime0002 = new TFile("lifetime0.002.root");
+  TFile * lifetime0005 = new TFile("lifetime0.005.root");
+  TFile * lifetime001 = new TFile("lifetime0.01.root");
+  TFile * lifetime002 = new TFile("lifetime0.02.root");
+  TFile * lifetime005 = new TFile("lifetime0.05.root");
+  TFile * lifetime01 = new TFile("lifetime0.1.root");
+  TFile * lifetime02 = new TFile("lifetime0.2.root");
+  TFile * lifetime05 = new TFile("lifetime0.5.root");
+  TFile * lifetime1 = new TFile("lifetime1.root");
+  TFile * lifetime2 = new TFile("lifetime2.root");
+  TFile * lifetime5 = new TFile("lifetime5.root");
+  TFile * lifetime10 = new TFile("lifetime10.root");
+  //TFile * lifetime15 = new TFile("lifetime15.root");
+  //TFile * lifetime20 = new TFile("lifetime20.root");
+
+  TCanvas * c = new TCanvas("c","c",600,800);
+  c->Divide(2,5);
+
+  c->cd(1);
+  TH1F * Erel0001t = (TH1F*)lifetime0001->Get("Erel_noT")->Clone("1");
+  Erel0001t->Draw();
+  Erel0001t->SetTitle("t_{1/2} = 0.00069 ns");
+
+
+  c->cd(2);
+  TH1F * Erel0001 = (TH1F*)lifetime0001->Get("Erel")->Clone("2");
+  Erel0001->Draw();
+  Erel0001->SetTitle("");
+  Erel0001->SetTitle("t_{1/2} = 0.00069 ns");
+  
+  c->cd(3);
+  TH1F * Erel001t = (TH1F*)lifetime001->Get("Erel_noT")->Clone("3");
+  Erel001t->Draw();
+  Erel001t->SetTitle("");
+  Erel001t->SetTitle("t_{1/2} = 0.0069 ns");
+  
+  c->cd(4);
+  TH1F * Erel001 = (TH1F*)lifetime001->Get("Erel")->Clone("4");
+  Erel001->Draw();
+  Erel001->SetTitle("");
+  Erel001->SetTitle("t_{1/2} = 0.0069 ns");
+  
+  
+  c->cd(5);
+  TH1F * Erel01t = (TH1F*)lifetime01->Get("Erel_noT")->Clone("5");
+  Erel01t->Draw();
+  Erel01t->SetTitle("");
+  Erel01t->SetTitle("t_{1/2} = 0.069 ns");
+  
+  c->cd(6);
+  TH1F * Erel01 = (TH1F*)lifetime01->Get("Erel")->Clone("6");
+  Erel01->Draw();
+  Erel01->SetTitle("");
+  Erel01->SetTitle("t_{1/2} = 0.069 ns");
+  
+  c->cd(7);
+  TH1F * Erel1t = (TH1F*)lifetime1->Get("Erel_noT")->Clone("7");
+  Erel1t->Draw();
+  Erel1t->SetTitle("");
+  Erel1t->SetTitle("t_{1/2} = 0.69 ns");
+  
+  c->cd(8);
+  TH1F * Erel1 = (TH1F*)lifetime1->Get("Erel")->Clone("8");
+  Erel1->Draw();
+  Erel1->SetTitle("");
+  Erel1->SetTitle("t_{1/2} = 0.69 ns");
+  
+  c->cd(9);
+  TH1F * Erel10t = (TH1F*)lifetime10->Get("Erel_noT")->Clone("9");
+  Erel10t->Draw();
+  Erel10t->SetTitle("");
+  Erel10t->SetTitle("t_{1/2} = 6.9 ns");
+  
+  c->cd(10);
+  TH1F * Erel10 = (TH1F*)lifetime10->Get("Erel")->Clone("10");
+  Erel10->Draw();
+  Erel10->SetTitle("");
+  Erel10->SetTitle("t_{1/2} = 6.9 ns");
+  
+}

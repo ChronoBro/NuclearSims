@@ -1,0 +1,37 @@
+#include "detectorV2.h"
+
+using namespace std;
+
+
+detectorV2::detectorV2(float z0, float thick)
+{
+  x=0.;
+  y=0.;
+  z=z0;
+  thickness = thick;
+
+
+
+
+
+}
+
+
+detectorV2::detectorV2(float x0, float y0, float z0, float thick)
+{
+
+
+
+
+
+
+}
+
+
+detectorV2::~detectorV2()
+{
+
+
+
+
+}

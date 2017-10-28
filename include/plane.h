@@ -19,6 +19,8 @@ class plane
   void setPlaneCenter(double * p0);
   void setNormal(double * n0);
   void moveCenter(double, double, double);
+  double lineIntersect(double *, double*);
+  double * planeCoordinate(double *);
   
  private:
 
@@ -27,6 +29,7 @@ class plane
   double normX[3];
   double normY[3];
   double labVector[3];
+  double planeVector[2];
   int didSet;
   void checkSet();
   //double p1[3];

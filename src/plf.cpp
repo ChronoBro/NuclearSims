@@ -139,14 +139,17 @@ void CPlf::GetPlf(float EPA0, int mass, int dontChange)
 
   if(!dontChange)
     {
-      ptr = momDist.getTransMom(); //could make these gaussian or something
-      pz = momDist.getLongMom();
+      // ptr = momDist.getTransMom(); //could make these gaussian or something
+      // pz = momDist.getLongMom();
     }
   else
     {
       ptr=0;
       pz=0;
     }
+
+  ptr=0;
+  pz=0;
   
   pbeam = sqrt(pow((EPA0+931.478)*mass,2)-pow(931.478*(float)mass,2));
   

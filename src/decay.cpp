@@ -2,7 +2,7 @@
 
 CRandom CDecay::ran;
 float const CDecay::pi = acos(-1.);
-float const CDecay::EkTot8B = 2.842; // energy released in 8B IAS decay to 6LI IAS
+float const CDecay::EkTot8B = 1.2; // energy released in 8B IAS decay to 6LI IAS
 float const CDecay::gamma8B = 0.00075;
 
 /**
@@ -354,7 +354,7 @@ void CDecay::ModeMicroCanonical()
 //     }
   //EkTot = 2.2; // ground state
   //EkTot = 1.476;
-  EkTot = 1.96; 
+  EkTot = 1.2; 
   if(Nfrags==3) //if you want to restrict the Jacobi Coordinates
     {
       fixedMicro(real,EkTot,sumA);

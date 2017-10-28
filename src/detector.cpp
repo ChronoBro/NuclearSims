@@ -20,8 +20,20 @@ detector::detector(float dist0, float thickness0, int coordinate0)
   yD=0.;
   zD=dist0;
   double p0[3] = {0,0,dist0};
+  double n0[3] = {0,0,-1};
   detPlane.setPlaneCenter(p0);
 
+  //by default will set plane coordinates to correspind to x-y axes and normal vector along z-axis
+  //need to make this more robust
+  setDetNormal(n0);
+  
+  p0[0] = 1.;
+  n0[1] = 1.;
+  n0[2] = dist0;
+  
+  detPlane.setPlaneCoordinates(p0,n0);
+  
+  
 }
 
 detector::detector(float x0, float y0, float z0, float thickness0, int coordinate0)

@@ -12,6 +12,7 @@
 #include "ring2.h"
 #include "plane_det.h"
 #include "detector.h"
+#include "MathGeoLib.h"
 
 using namespace std;
 
@@ -76,6 +77,15 @@ class CFrag : public fragment
   ring * Inactive;
   plane_det * Plane;
 
+  void setTrajectory(float x, float y, float z);
+  void setRecon();
+  void setRecon(float d, float measuredD, float start);
+  Ray trajectory;
+  double tofToRKE(double d, double TOF);
+  double RKEToTOF(float RKE, float d);
+
+  float ringDist;
+  
 };
 
 #endif

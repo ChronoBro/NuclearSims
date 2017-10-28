@@ -81,8 +81,6 @@ class detector
   
   plane detPlane;
   plane detBPlane;
-  Polygon detFrontFace;
-  Polygon detBackFace;
   
  private:
 

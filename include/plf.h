@@ -36,7 +36,7 @@ class CPlf
   static float const pi;
   static CRandom ran;
   CFrame *frame;
-  CMomDist momDist;
+  //CMomDist momDist;
   CMultScat *multScat;
   void MultiScat(float);
   void propagate(double);
